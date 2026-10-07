@@ -16167,3 +16167,27 @@ table.example.sh-ex-cols-25-60-15 td:nth-child(3) { width: 15% !important; }
    ───────────────────────────────────────────────────────────── */
 #bloodIssueModal .modal-header .form-check-label,
 #componentIssueModal .modal-header .form-check-label { color: #fff; }
+
+/* Settings image uploads: show the complete logo or banner. */
+#modal-uploadfile #ajaxlogo .dropify-wrapper {
+  height: 220px !important;
+  min-height: 220px !important;
+}
+#modal-uploadfile #ajaxlogo .dropify-preview { padding: 16px; }
+#modal-uploadfile #ajaxlogo .dropify-render {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+#modal-uploadfile #ajaxlogo .dropify-render img {
+  position: static;
+  top: auto;
+  transform: none;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain;
+}

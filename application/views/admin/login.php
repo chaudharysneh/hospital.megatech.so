@@ -17,7 +17,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?php echo base_url(); ?>backend/css/sh-tokens.css">
-<link rel="stylesheet" href="<?php echo base_url(); ?>backend/css/sh-login.css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>backend/css/sh-login.css?v=<?php echo filemtime(FCPATH . 'backend/css/sh-login.css'); ?>">
 <?php if (isset($sh_theme_tokens)) { echo theme_render_style_block($sh_theme_tokens); } ?>
 </head>
 <body class="variant-<?php echo isset($sh_theme_tokens) ? theme_preset_to_variant($sh_theme_tokens['theme_preset']) : (isset($sh_variant) ? htmlspecialchars($sh_variant) : 'a'); ?>" data-preset="<?php echo isset($sh_theme_tokens) ? htmlspecialchars($sh_theme_tokens['theme_preset']) : 'clinical'; ?>">
@@ -38,6 +38,11 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
       <div class="lp-logo-name"><?php echo html_escape($title_name); ?></div>
     </div>
 
+    <?php if (!empty($logoresult['login_banner'])): ?>
+    <div class="lp-login-banner">
+      <img src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_banner'])); ?>" alt="<?php echo html_escape($title_name); ?> banner">
+    </div>
+    <?php else: ?>
     <div class="lp-pitch">
       <div class="lp-badge"><span class="dot"></span><?php echo $this->lang->line('admin_portal') ?: 'Admin Portal'; ?></div>
 
@@ -73,12 +78,19 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
       <?php endif; ?>
     </div>
 
+    <?php endif; ?>
+
     <div class="lp-tiny">© <?php echo date('Y'); ?> <?php echo html_escape($title_name); ?> · <?php echo $this->lang->line('all_rights_reserved') ?: 'All rights reserved'; ?></div>
   </div>
 
   <!-- RIGHT: Login form -->
   <div class="lp-form-panel">
     <div class="lp-card">
+      <?php if (!empty($logoresult['login_logo'])): ?>
+      <div class="lp-login-logo">
+        <img src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_logo'])); ?>" alt="<?php echo html_escape($title_name); ?> logo">
+      </div>
+      <?php endif; ?>
       <h2><?php echo $this->lang->line('admin_login'); ?></h2>
 
       <?php if (isset($error_message)): ?>

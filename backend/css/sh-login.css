@@ -468,3 +468,46 @@ svg { display: block; }
   .lp-card { max-width: 100%; }
   .lp-vswitch { bottom: 12px; }
 }
+
+/* Uploaded admin login branding */
+.lp-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.lp-brand, .lp-form-panel, .lp-card { min-width: 0; }
+.lp-login-banner {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px -48px;
+  overflow: hidden;
+}
+.lp-login-banner img {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 200px);
+  height: calc(100dvh - 200px);
+  max-width: 100%;
+  max-height: 640px;
+  object-fit: cover;
+}
+.lp-login-logo {
+  width: 100%;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.lp-login-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 280px;
+  max-height: 96px;
+  object-fit: contain;
+}
+@media (max-width: 768px) {
+  .lp-wrap { grid-template-columns: minmax(0, 1fr); }
+}

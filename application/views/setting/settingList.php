@@ -105,6 +105,25 @@ $genderList = $this->customlib->getGender();
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <?php foreach (array('logo' => 'Login Form Logo', 'banner' => 'Login Form Banner') as $kind => $label): ?>
+                                    <div class="col-md-6">
+                                        <div class="sh-form-row">
+                                            <label class="sh-label"><?php echo $label; ?></label>
+                                            <div class="sh-field">
+                                                <?php $column = 'login_' . $kind; if (!empty($settinglist->$column)): ?>
+                                                <img src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $settinglist->$column)); ?>" alt="<?php echo $label; ?>" style="max-width: 180px; max-height: 70px; object-fit: contain;">
+                                                <?php endif; ?>
+                                                <?php if ($this->rbac->hasPrivilege('general_setting', 'can_edit')): ?>
+                                                <a href="#" class="btn btn-primary btn-sm upload_login_image" data-kind="<?php echo $kind; ?>" data-label="<?php echo $label; ?>"><i class="fa fa-picture-o"></i> Upload <?php echo $label; ?></a>
+                                                <?php endif; ?>
+                                                <small class="d-block text-muted">JPG, PNG or WebP, up to 5 MB.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+
                                 <!-- Language -->
                                 <div class="settinghr"></div>
                                 <h4 class="session-head"><?php echo $this->lang->line('language'); ?></h4>
@@ -394,7 +413,7 @@ $genderList = $this->customlib->getGender();
                                 <span class="sh-card-header-title"><?php echo $this->lang->line('details'); ?></span>
                             </div>
                             <div class="p-2">
-                                <input type="file" class="filestyle" id="file" name="file" data-allowed-file-extensions="jpg jpeg png gif svg webp" data-height="150"/>
+                                <input type="file" class="filestyle" id="file" name="file" data-allowed-file-extensions="jpg jpeg png gif svg webp" data-height="220"/>
                                 <input value="<?php echo (int)$settinglist->id ?>" type="hidden" name="id" id="id"/>
                             </div>
                         </div>
@@ -452,6 +471,13 @@ $genderList = $this->customlib->getGender();
 
 <script type="text/javascript">
     var base_url = '<?php echo base_url(); ?>';
+    $('.upload_login_image').on('click', function (e) {
+        e.preventDefault();
+        $('#myModalLabel').text($(this).data('label') + ' (JPG, PNG or WebP, up to 5 MB)');
+        $('#ajaxlogo').attr('action', '<?php echo site_url('schsettings/ajax_loginimage'); ?>/' + $(this).data('kind'));
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-uploadfile'), {backdrop: 'static', keyboard: false}).show();
+    });
+
     $('.upload_logo').on('click', function (e) {
         e.preventDefault();
         $("#myModalLabel").html('<?php echo $this->lang->line('edit_logo') ?> (182px X 18px)');

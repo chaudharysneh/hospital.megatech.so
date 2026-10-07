@@ -110,6 +110,68 @@ class Schsettings extends Admin_Controller
         }
     }
 
+    public function ajax_loginimage($kind = '')
+    {
+        if (!$this->rbac->hasPrivilege('general_setting', 'can_edit')) {
+            access_denied();
+        }
+        if (!in_array($kind, array('logo', 'banner'), true)) {
+            show_404();
+            return;
+        }
+        $this->form_validation->set_rules('file', 'Image', 'callback_validate_login_image|callback_validateCanUploadFile[file]');
+        if (!$this->form_validation->run()) {
+            echo json_encode(array('success' => false, 'error' => array('file' => form_error('file'))));
+            return;
+        }
+        $setting = $this->setting_model->getHospitalDetail();
+        $column = 'login_' . $kind;
+        $old_file = $setting->$column;
+        $directory = 'uploads/hospital_content/logo';
+        $old_kb = empty($old_file) ? 0 : $this->media_storage->getUploadedFileSize($old_file, $directory);
+        $new_kb = $this->media_storage->getTmpFileSize('file');
+        $filename = $this->media_storage->fileupload('file', './' . $directory . '/');
+        if (empty($filename)) {
+            echo json_encode(array('success' => false, 'error' => array('file' => 'Image upload failed. Please try again.')));
+            return;
+        }
+        if ($this->setting_model->add(array('id' => $setting->id, $column => $filename)) === false) {
+            $this->media_storage->filedelete($filename, $directory);
+            echo json_encode(array('success' => false, 'error' => array('file' => 'Could not save the image. Please try again.')));
+            return;
+        }
+        try {
+            if ($new_kb > $old_kb) {
+                $this->saasvalidation->updateResouceQuota('storage', $new_kb - $old_kb);
+            } elseif ($old_kb > $new_kb) {
+                $this->saasvalidation->deleteResouceQuota('storage', $old_kb - $new_kb);
+            }
+        } catch (Exception $e) {
+            log_message('error', 'Login image storage quota update failed: ' . $e->getMessage());
+        }
+        if (!empty($old_file) && $old_file !== $filename) {
+            $this->media_storage->filedelete($old_file, $directory);
+        }
+        echo json_encode(array('success' => true, 'error' => '', 'message' => $this->lang->line('update_message')));
+    }
+
+    public function validate_login_image()
+    {
+        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
+            $this->form_validation->set_message('validate_login_image', 'Please select an image to upload.');
+            return false;
+        }
+        $image = @getimagesize($file['tmp_name']);
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $types = array('jpg' => IMAGETYPE_JPEG, 'jpeg' => IMAGETYPE_JPEG, 'png' => IMAGETYPE_PNG, 'webp' => IMAGETYPE_WEBP);
+        if (!$image || !isset($types[$extension]) || $types[$extension] !== $image[2] || $file['size'] > 5 * 1024 * 1024) {
+            $this->form_validation->set_message('validate_login_image', 'Upload a JPG, PNG or WebP image up to 5 MB.');
+            return false;
+        }
+        return true;
+    }
+
     public function ajax_applogo()
     {
         $this->form_validation->set_rules('id', 'ID', 'trim|required|xss_clean');

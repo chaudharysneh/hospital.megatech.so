@@ -24,7 +24,7 @@ class Setting_model extends MY_Model
 	
     public function get($id = null)
     {
-        $this->db->select('sch_settings.id,sch_settings.start_month,sch_settings.lang_id,sch_settings.languages,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.mini_logo,sch_settings.app_logo,sch_settings.is_rtl,sch_settings.cron_secret_key, sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.opd_record_month,sch_settings.image,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.folder_path,sch_settings.base_url,sch_settings.message_mode,sch_settings.saas_key');
+        $this->db->select('sch_settings.id,sch_settings.start_month,sch_settings.lang_id,sch_settings.languages,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.login_logo,sch_settings.login_banner,sch_settings.mini_logo,sch_settings.app_logo,sch_settings.is_rtl,sch_settings.cron_secret_key, sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.opd_record_month,sch_settings.image,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.folder_path,sch_settings.base_url,sch_settings.message_mode,sch_settings.saas_key');
         $this->db->from('sch_settings');
         $this->db->join('languages', 'languages.id = sch_settings.lang_id');
         if ($id != null) {
@@ -43,7 +43,7 @@ class Setting_model extends MY_Model
 
     public function getHospitalDetail($id = null)
     {
-        $this->db->select('sch_settings.id,sch_settings.zoom_api_key,sch_settings.zoom_api_secret,sch_settings.lang_id,sch_settings.is_rtl,sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.image,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.theme,sch_settings.base_url,sch_settings.folder_path,sch_settings.mini_logo,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,sch_settings.app_logo,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.biometric,sch_settings.biometric_device,sch_settings.message_mode,sch_settings.message_queue_attempts,sch_settings.message_queue_batch_size'
+        $this->db->select('sch_settings.id,sch_settings.zoom_api_key,sch_settings.zoom_api_secret,sch_settings.lang_id,sch_settings.is_rtl,sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.image,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.theme,sch_settings.base_url,sch_settings.folder_path,sch_settings.login_logo,sch_settings.login_banner,sch_settings.mini_logo,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_secondary_color_code,sch_settings.app_logo,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.biometric,sch_settings.biometric_device,sch_settings.message_mode,sch_settings.message_queue_attempts,sch_settings.message_queue_batch_size'
         );
         $this->db->from('sch_settings');
         $this->db->join('languages', 'languages.id = sch_settings.lang_id');
@@ -54,7 +54,7 @@ class Setting_model extends MY_Model
 
     public function getSetting()
     {
-        $this->db->select('sch_settings.id,sch_settings.lang_id,sch_settings.base_url,sch_settings.folder_path,sch_settings.is_rtl,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.cron_secret_key,sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,languages.short_code as language_code,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.image,sch_settings.app_logo,sch_settings.credit_limit,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_logo,sch_settings.mini_logo,sch_settings.image,sch_settings.app_secondary_color_code,sch_settings.patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.biometric,sch_settings.message_mode,sch_settings.message_queue_attempts,sch_settings.message_queue_batch_size'
+        $this->db->select('sch_settings.id,sch_settings.lang_id,sch_settings.base_url,sch_settings.folder_path,sch_settings.is_rtl,sch_settings.doctor_restriction,sch_settings.superadmin_restriction,sch_settings.cron_secret_key,sch_settings.timezone,sch_settings.name,sch_settings.email,sch_settings.phone,languages.language,languages.short_code as language_code,sch_settings.address,sch_settings.dise_code,sch_settings.date_format,sch_settings.time_format,sch_settings.currency,sch_settings.currency_symbol,sch_settings.image,sch_settings.app_logo,sch_settings.credit_limit,sch_settings.credit_limit,sch_settings.opd_record_month,sch_settings.theme,sch_settings.mobile_api_url,sch_settings.app_primary_color_code,sch_settings.app_logo,sch_settings.login_logo,sch_settings.login_banner,sch_settings.mini_logo,sch_settings.image,sch_settings.app_secondary_color_code,sch_settings.patient_panel,sch_settings.patient_delete_account,sch_settings.scan_code_type,sch_settings.biometric,sch_settings.message_mode,sch_settings.message_queue_attempts,sch_settings.message_queue_batch_size'
         );
         $this->db->from('sch_settings');
         $this->db->join('languages', 'languages.id = sch_settings.lang_id');
@@ -239,7 +239,7 @@ class Setting_model extends MY_Model
 
     public function getLogoImage()
     {
-        $query = $this->db->select('image,mini_logo')->get('sch_settings');
+        $query = $this->db->select('image,mini_logo,login_logo,login_banner')->get('sch_settings');
         return $query->row_array();
     }
 
