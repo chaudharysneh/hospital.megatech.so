@@ -135,6 +135,8 @@ class Schsettings extends Admin_Controller
             echo json_encode(array('success' => false, 'error' => array('file' => 'Image upload failed. Please try again.')));
             return;
         }
+        $filename = $this->optimize_login_image($filename, $kind);
+        $new_kb = $this->media_storage->getUploadedFileSize($filename, $directory);
         if ($this->setting_model->add(array('id' => $setting->id, $column => $filename)) === false) {
             $this->media_storage->filedelete($filename, $directory);
             echo json_encode(array('success' => false, 'error' => array('file' => 'Could not save the image. Please try again.')));
@@ -153,6 +155,51 @@ class Schsettings extends Admin_Controller
             $this->media_storage->filedelete($old_file, $directory);
         }
         echo json_encode(array('success' => true, 'error' => '', 'message' => $this->lang->line('update_message')));
+    }
+
+    /** Resize uploaded branding once, rather than processing it on every login. */
+    private function optimize_login_image($filename, $kind)
+    {
+        if (!extension_loaded('gd') || !function_exists('imagewebp')) {
+            return $filename;
+        }
+        $path = FCPATH . 'uploads/hospital_content/logo/' . $filename;
+        $info = @getimagesize($path);
+        // Bound decoding memory; leave the original intact if optimization is unavailable.
+        if (!$info || $info[0] * $info[1] > 16000000) {
+            return $filename;
+        }
+        $loaders = array(IMAGETYPE_JPEG => 'imagecreatefromjpeg', IMAGETYPE_PNG => 'imagecreatefrompng', IMAGETYPE_WEBP => 'imagecreatefromwebp');
+        if (!isset($loaders[$info[2]]) || !function_exists($loaders[$info[2]])) {
+            return $filename;
+        }
+        $source = @$loaders[$info[2]]($path);
+        if (!$source) {
+            return $filename;
+        }
+        $max_width = $kind === 'banner' ? 1200 : 560;
+        $max_height = $kind === 'banner' ? 1200 : 192;
+        $scale = min(1, $max_width / $info[0], $max_height / $info[1]);
+        $width = max(1, (int) round($info[0] * $scale));
+        $height = max(1, (int) round($info[1] * $scale));
+        $image = imagecreatetruecolor($width, $height);
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 127));
+        imagecopyresampled($image, $source, 0, 0, 0, 0, $width, $height, $info[0], $info[1]);
+        $optimized_name = pathinfo($filename, PATHINFO_FILENAME) . '-optimized.webp';
+        $optimized_path = FCPATH . 'uploads/hospital_content/logo/' . $optimized_name;
+        $saved = @imagewebp($image, $optimized_path, $kind === 'banner' ? 80 : 88);
+        imagedestroy($image);
+        imagedestroy($source);
+        if ($saved && is_file($optimized_path) && filesize($optimized_path) > 0 && filesize($optimized_path) < filesize($path)) {
+            $this->media_storage->filedelete($filename, 'uploads/hospital_content/logo');
+            return $optimized_name;
+        }
+        if (is_file($optimized_path)) {
+            $this->media_storage->filedelete($optimized_name, 'uploads/hospital_content/logo');
+        }
+        return $filename;
     }
 
     public function validate_login_image()

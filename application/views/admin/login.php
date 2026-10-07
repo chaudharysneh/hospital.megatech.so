@@ -40,7 +40,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
 
     <?php if (!empty($logoresult['login_banner'])): ?>
     <div class="lp-login-banner">
-      <img src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_banner'])); ?>" alt="<?php echo html_escape($title_name); ?> banner">
+      <img loading="eager" fetchpriority="high" decoding="async" src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_banner'])); ?>" alt="<?php echo html_escape($title_name); ?> banner">
     </div>
     <?php else: ?>
     <div class="lp-pitch">
@@ -88,7 +88,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
     <div class="lp-card">
       <?php if (!empty($logoresult['login_logo'])): ?>
       <div class="lp-login-logo">
-        <img src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_logo'])); ?>" alt="<?php echo html_escape($title_name); ?> logo">
+        <img loading="eager" decoding="async" src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_logo'])); ?>" alt="<?php echo html_escape($title_name); ?> logo">
       </div>
       <?php endif; ?>
       <h2><?php echo $this->lang->line('admin_login'); ?></h2>

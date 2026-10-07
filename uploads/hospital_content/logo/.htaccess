@@ -1,0 +1,7 @@
+
+# Branding uploads use unique filenames, so browsers can safely reuse them.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(?:jpe?g|png|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
