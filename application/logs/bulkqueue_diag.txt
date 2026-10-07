@@ -1,0 +1,16 @@
+2026-06-02 17:29:48 --- submit: mode=1 notification_type=1 patient_count=1
+2026-06-02 17:29:48   patient_id=65 email= mobileno= | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:30:01 --- submit: mode=1 notification_type=1 patient_count=1
+2026-06-02 17:30:01   patient_id=65 email= mobileno= | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:33:59 --- submit: mode=1 notification_type=1 patient_count=1
+2026-06-02 17:33:59   patient_id=4 email= mobileno= | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:34:26 --- submit: mode=1 notification_type=1 patient_count=1
+2026-06-02 17:34:26   patient_id=7 email=sahu.laxmii1987@gmail.com mobileno=6574464664 | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:34:45 --- submit: mode=1 notification_type=2 patient_count=1
+2026-06-02 17:34:45   patient_id=7 email=sahu.laxmii1987@gmail.com mobileno=6574464664 | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:35:13 --- submit: mode=1 notification_type=2 patient_count=1
+2026-06-02 17:35:13   patient_id=7 email=sahu.laxmii1987@gmail.com mobileno=6574464664 | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-02 17:35:34 --- submit: mode=1 notification_type=3 patient_count=1
+2026-06-02 17:35:34   patient_id=7 email=sahu.laxmii1987@gmail.com mobileno=6574464664 | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]
+2026-06-06 16:02:19 --- submit: mode=1 notification_type=2 patient_count=1
+2026-06-06 16:02:19   patient_id=66 email= mobileno=756754774 | login_credential[template_empty=0 mail=1 sms=1] | forgot_password[mail=1 template_empty=0]

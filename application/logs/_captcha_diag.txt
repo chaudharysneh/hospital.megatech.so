@@ -1,0 +1,13 @@
+Array
+(
+    [gd_loaded] => 1
+    [img_path] => /var/www/devx.webfeb.comdT6Ich4nWj/public_html/sh70dev/backend/captcha_images/
+    [img_path_isdir] => 1
+    [img_path_isrw] => 
+    [uploads_isrw] => 1
+    [logs_isrw] => 1
+    [font_exists] => 1
+    [fcpath] => /var/www/devx.webfeb.comdT6Ich4nWj/public_html/sh70dev/
+    [fpm_user] => www-data
+    [dir_owner] => wfdevx
+)
