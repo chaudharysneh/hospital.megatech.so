@@ -911,6 +911,13 @@ class Admin extends Admin_Controller
         $data['outstanding_count']   = $outstanding['bill_count'];
         $data['outstanding_overdue'] = $outstanding['overdue_count'];
 
+        if ($this->rbac->hasPrivilege('balance_amount_report', 'can_view')) {
+            $this->load->model('report_model');
+            $due_summary = $this->report_model->getmodulewisebalance_report(null, null, true);
+            $data['report_due_amount'] = (float)$due_summary['total_due'];
+            $data['report_due_count'] = (int)$due_summary['unpaid_count'];
+        }
+
         // Pharmacy low-stock summary (Chunk 4)
         $this->load->model('pharmacy_model');
         $low_stock = $this->pharmacy_model->getLowStockSummary();

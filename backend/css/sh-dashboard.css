@@ -214,3 +214,35 @@
 [dir="rtl"] .dash-tbl thead th.num,
 [dir="rtl"] .dash-tbl tbody td.num{text-align:left;}
 [dir="rtl"] .donut-legend .pct{text-align:left;}
+
+/* Supplier dues begin the operations row; blood stock sits beside income charts. */
+.supplier-due-card { display: flex; flex-direction: column; min-height: 140px; }
+.supplier-due-card .supplier-due-link { margin-top: auto; padding-top: 16px; font-size: 12px; font-weight: 600; color: var(--red); }
+.dash-chart-row-with-blood { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr); }
+.dash-chart-row-with-blood > * { min-width: 0; }
+.dash-chart-row-with-blood .doughnut-layout { flex-wrap: wrap; }
+@media (max-width: 1200px) {
+  .dash-chart-row-with-blood { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .dash-chart-row-with-blood { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Spread blood stock through the card's chart-height space. */
+.dash-chart-row-with-blood .blood-bank-card .bb-grid {
+  flex: 1;
+  grid-template-rows: repeat(2, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.dash-chart-row-with-blood .blood-bank-card .bb-grid .bg {
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 6px;
+}
+.dash-chart-row-with-blood .blood-bank-card .bb-grid .g { font-size: 14px; }
+.dash-chart-row-with-blood .blood-bank-card .bb-grid .u { font-size: 24px; }
+.dash-chart-row-with-blood .blood-bank-card .bb-status {
+  margin-top: 16px;
+  padding-top: 12px;
+}

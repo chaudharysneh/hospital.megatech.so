@@ -516,7 +516,7 @@ class Report_model extends CI_Model
         return $result->result_array();
     }
 	
-    public function getmodulewisebalance_report($module_type=null,$patient_id=null)
+    public function getmodulewisebalance_report($module_type=null,$patient_id=null,$due_summary=false)
     {
         $condition="";
         if($module_type!=null && $module_type!='all'){
@@ -735,6 +735,13 @@ class Report_model extends CI_Model
         left join staff on staff.id=ipd_details.generated_by   
         ) as tt where 0=0 $condition";    
        
+        if ($due_summary) {
+            // Match the report's balance column; count only bills with money due.
+            return $this->db->query("SELECT COALESCE(SUM(COALESCE(net_amount, 0) - COALESCE(paid_amount, 0)), 0) AS total_due,
+                COUNT(*) AS unpaid_count FROM (" . $query . ") AS balances
+                WHERE COALESCE(net_amount, 0) - COALESCE(paid_amount, 0) > 0")->row_array();
+        }
+
         $res = $this->db->query($query);
         return $res->result_array();
     }
