@@ -200,11 +200,11 @@ class Report_model extends CI_Model
             $search .= " and date_format(payment.date,'%Y-%m-%d ') ='" . $date . "' ";
         }
 
-        $sql = "SELECT `payment`.`billing_id`, `payment`.`id`, `person`.`name`, `patients`.`patient_name`, `patients`.`id` as `patient_id`, `type`.`name` as `type`, `payment`.`bill_amount`, `payment`.`percentage`, `payment`.`amount`, `prefixes`.`prefix`, payment.date FROM `referral_payment` `payment` LEFT JOIN `referral_type` `type` ON `type`.`id`=`payment`.`referral_type` INNER JOIN `prefixes` ON `type`.`prefixes_type`=`prefixes`.`type` JOIN `referral_person` `person` ON `person`.`id`=`payment`.`referral_person_id` LEFT JOIN `patients` ON `patients`.`id`=`payment`.`patient_id` where 0=0 " . $search;
+        $sql = "SELECT `payment`.`billing_id`, `payment`.`id`, `person`.`name`, `patients`.`patient_name`, `patients`.`id` as `patient_id`, `type`.`name` as `type`, `payment`.`bill_amount`, `payment`.`percentage`, `payment`.`amount`, `payment`.`payment_mode`, `prefixes`.`prefix`, payment.date FROM `referral_payment` `payment` LEFT JOIN `referral_type` `type` ON `type`.`id`=`payment`.`referral_type` INNER JOIN `prefixes` ON `type`.`prefixes_type`=`prefixes`.`type` JOIN `referral_person` `person` ON `person`.`id`=`payment`.`referral_person_id` LEFT JOIN `patients` ON `patients`.`id`=`payment`.`patient_id` where 0=0 " . $search;
         $this->datatables->query($sql)
 
-            ->searchable('person.name,patient_name,date,billing_id,percentage,bill_amount,amount')
-            ->orderable('person.name,patient_name,date,billing_id,percentage,bill_amount,amount')
+            ->searchable('person.name,patient_name,date,billing_id,percentage,bill_amount,payment.payment_mode,amount')
+            ->orderable('person.name,patient_name,date,billing_id,percentage,bill_amount,payment.payment_mode,amount')
             ->query_where_enable(TRUE);
         return $this->datatables->generate('json');
     }

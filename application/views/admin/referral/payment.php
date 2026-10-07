@@ -28,6 +28,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                         <th class="text-end"><?php echo $this->lang->line('bill_no'); ?></th>
                                         <th class="text-end"><?php echo $this->lang->line('bill_amount').' ('. $currency_symbol .')'; ?></th>
                                         <th class="text-end"><?php echo $this->lang->line('commission_percentage'); ?> (%)</th>
+                                        <th><?php echo $this->lang->line('payment_mode'); ?></th>
                                         <th class="text-end"><?php echo $this->lang->line('commission_amount').' ('. $currency_symbol .')'; ?></th>
                                         <?php if ( ($this->rbac->hasPrivilege('referral_payment', 'can_edit')) || ($this->rbac->hasPrivilege('referral_payment', 'can_delete'))  ) { ?>
                                         <th class="text-end noExport"><?php echo $this->lang->line('action'); ?></th>
@@ -48,6 +49,10 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                                 <td class="text-end"><?php echo html_escape($value["prefix"]).(int)$value["billing_id"]; ?></td>
                                                 <td class="text-end"><?php echo amountFormat($value["bill_amount"]); ?></td>
                                                 <td class="text-end"><?php echo html_escape($value["percentage"]); ?></td>
+                                                <td><?php
+                                                    $mode = $value['payment_mode'] ?? '';
+                                                    echo html_escape($payment_mode[$mode] ?? ($mode ?: '-'));
+                                                ?></td>
                                                 <td class="text-end"><?php echo html_escape($value["amount"]); ?></td>
                                                 <?php if ( ($this->rbac->hasPrivilege('referral_payment', 'can_edit')) || ($this->rbac->hasPrivilege('referral_payment', 'can_delete'))  ) { ?>
                                                 <td class="text-end noExport">
@@ -217,6 +222,26 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                             <div class="col-12">
                                                 <label class="form-label form-label-sm"><?php echo $this->lang->line('commission_amount') . ' (' . $currency_symbol . ')'; ?> <small class="req">*</small></label>
                                                 <input class="form-control form-control-sm" id="commission_amount" name="commission_amount" type="text">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label form-label-sm"><?php echo $this->lang->line('payment_mode'); ?></label>
+                                                <select name="payment_mode" id="referral_payment_mode" class="form-control form-control-sm">
+                                                    <?php foreach ($payment_mode as $key => $value): ?>
+                                                    <option value="<?php echo html_escape($key); ?>"><?php echo html_escape($value); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 referral-cheque-fields d-none">
+                                                <label class="form-label form-label-sm"><?php echo $this->lang->line('cheque_no'); ?> <small class="req">*</small></label>
+                                                <input name="cheque_no" class="form-control form-control-sm" type="text">
+                                            </div>
+                                            <div class="col-12 referral-cheque-fields d-none">
+                                                <label class="form-label form-label-sm"><?php echo $this->lang->line('cheque_date'); ?> <small class="req">*</small></label>
+                                                <input name="cheque_date" class="form-control form-control-sm date" type="text">
+                                            </div>
+                                            <div class="col-12 referral-cheque-fields d-none">
+                                                <label class="form-label form-label-sm"><?php echo $this->lang->line('attach_document'); ?></label>
+                                                <input type="file" name="document" class="filestyle form-control form-control-sm">
                                             </div>
                                         </div>
                                     </div>
@@ -575,3 +600,20 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
 </script>
 
 <?php $this->load->view('admin/patient/patientaddmodal') ?>
+<script>
+$(function () {
+    function syncReferralPaymentMode() {
+        var cheque = $('#referral_payment_mode').val() === 'Cheque';
+        $('#addpayment .referral-cheque-fields').toggleClass('d-none', !cheque);
+        $('#addpayment input[name="cheque_no"], #addpayment input[name="cheque_date"]').prop('required', cheque).prop('disabled', !cheque);
+        $('#addpayment input[name="document"]').prop('disabled', !cheque);
+    }
+    $('#referral_payment_mode').on('change', syncReferralPaymentMode);
+    $('#myModal').on('hidden.bs.modal', function () {
+        $('#referral_payment_mode').val('Cash');
+        syncReferralPaymentMode();
+    });
+    $('#myModal').on('shown.bs.modal', syncReferralPaymentMode);
+    syncReferralPaymentMode();
+});
+</script>

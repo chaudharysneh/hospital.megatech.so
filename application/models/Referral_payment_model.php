@@ -9,7 +9,7 @@ class Referral_payment_model extends MY_Model
 
     public function get_payment()
     {
-        $this->db->select("payment.billing_id,payment.id, person.name, patients.patient_name,patients.id as patient_id, type.name as type, payment.bill_amount, payment.percentage, payment.amount,prefixes.prefix");
+        $this->db->select("payment.billing_id,payment.id, person.name, patients.patient_name,patients.id as patient_id, type.name as type, payment.bill_amount, payment.percentage, payment.amount,payment.payment_mode,prefixes.prefix");
         $this->db->join("referral_type type", "type.id=payment.referral_type", "left");
         $this->db->join("prefixes", "type.prefixes_type=prefixes.type", "inner");
         $this->db->join("referral_person person", "person.id=payment.referral_person_id");

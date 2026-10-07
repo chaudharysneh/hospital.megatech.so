@@ -78,6 +78,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             <th><?php echo $this->lang->line('bill_no'); ?></th>
                             <th class="text-end" width="15%"><?php echo $this->lang->line('commission_percentage'); ?> (%)</th>
                             <th class="text-end" width="15%"><?php echo $this->lang->line('bill_amount') . ' (' . $currency_symbol . ')'; ?></th>
+                            <th><?php echo $this->lang->line('payment_mode'); ?></th>
                             <th class="text-end" width="15%"><?php echo $this->lang->line('commission_amount') . ' (' . $currency_symbol . ')'; ?></th>
                         </tr>
                     </thead>
@@ -116,7 +117,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         $("#error_patient_type").html('');
                         $("#error_patient").html('');
                         initDatatable('allajaxlist', 'admin/referral/referral_report/', data.param, [], 100, [
-                            { "sWidth": "15%", "aTargets": [-1, -2, -3], 'sClass': 'dt-body-right' }
+                            { "sWidth": "15%", "aTargets": [-1, -3, -4], 'sClass': 'dt-body-right' }
                         ]);
                     }
                 }

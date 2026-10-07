@@ -11,6 +11,7 @@ class Referral extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->config->load('payroll');
         $this->load->library('form_validation');
         $this->load->model('referral_category_model');
         $this->load->model('referral_person_model');
@@ -84,6 +85,7 @@ class Referral extends Admin_Controller
         $data['type']     = $this->referral_category_model->get_type();
         $data['person']   = $this->referral_person_model->get_person();
         $data['payment']  = $this->referral_payment_model->get_payment();
+        $data['payment_mode'] = $this->config->item('payment_mode');
         $data['module'] = 'referral_payment';
         $this->load->view('layout/header', $data);
         $this->load->view('admin/referral/payment', $data);
@@ -150,6 +152,9 @@ class Referral extends Admin_Controller
                 $row[]     = $value->prefix . $value->billing_id;                
                 $row[]     = $value->percentage;
                 $row[]     = $value->bill_amount;
+                $mode = $value->payment_mode ?? '';
+                $modes = $this->config->item('payment_mode');
+                $row[]     = html_escape($modes[$mode] ?? ($mode ?: '-'));
                 $row[]     = $value->amount;
                 $dt_data[] = $row;
             }
@@ -162,6 +167,7 @@ class Referral extends Admin_Controller
             $footer_row[] = "<b>" . $this->lang->line('total_amount') . "</b>" . ':';
             $footer_row[] = "<b>" . $currency_symbol . (number_format($total_bill, 2, '.', '')) . "<br/>";
             
+            $footer_row[] = "";
             $footer_row[] = "<b>" . $currency_symbol . (number_format($total_amount, 2, '.', '')) . "<br/>";
 
             $dt_data[] = $footer_row;
