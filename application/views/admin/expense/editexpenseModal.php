@@ -41,6 +41,27 @@
                     <span class="text-danger"><?php echo form_error('amount'); ?></span>
                 </div>
                 <div class="col-sm-6">
+                    <label class="form-label form-label-sm"><?php echo $this->lang->line('payment_mode'); ?> <small class="req">*</small></label>
+                    <select data-finance-payment-mode name="payment_mode" class="form-select form-select-sm">
+                        <?php $selected_mode = set_value('payment_mode', $expense['payment_mode'] ?? ''); ?>
+                        <option value=""><?php echo $this->lang->line('select'); ?></option>
+                        <?php foreach ($this->config->item('payment_mode') as $key => $label): ?>
+                        <option value="<?php echo html_escape($key); ?>"<?php echo $selected_mode === $key ? ' selected' : ''; ?>><?php echo html_escape($label); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="text-danger"><?php echo form_error('payment_mode'); ?></span>
+                </div>
+                <div class="col-sm-6 finance-cheque-fields<?php echo $selected_mode === 'Cheque' ? '' : ' d-none'; ?>">
+                    <label class="form-label form-label-sm"><?php echo $this->lang->line('cheque_no'); ?> <small class="req">*</small></label>
+                    <input name="cheque_no" type="text" class="form-control form-control-sm" value="<?php echo html_escape(set_value('cheque_no', $expense['cheque_no'] ?? '')); ?>"<?php echo $selected_mode === 'Cheque' ? ' required' : ' disabled'; ?>>
+                    <span class="text-danger"><?php echo form_error('cheque_no'); ?></span>
+                </div>
+                <div class="col-sm-6 finance-cheque-fields<?php echo $selected_mode === 'Cheque' ? '' : ' d-none'; ?>">
+                    <label class="form-label form-label-sm"><?php echo $this->lang->line('cheque_date'); ?> <small class="req">*</small></label>
+                    <input name="cheque_date" type="text" class="form-control form-control-sm date" autocomplete="off" value="<?php echo html_escape(set_value('cheque_date', !empty($expense['cheque_date']) ? $this->customlib->YYYYMMDDTodateFormat($expense['cheque_date']) : '')); ?>"<?php echo $selected_mode === 'Cheque' ? ' required' : ' disabled'; ?>>
+                    <span class="text-danger"><?php echo form_error('cheque_date'); ?></span>
+                </div>
+                <div class="col-sm-6">
                     <label class="form-label form-label-sm"><?php echo $this->lang->line('attach_document'); ?></label>
                     <input id="documentsf" name="documents" type="file" class="filestyle form-control form-control-sm" data-height="26" value="<?php echo set_value('documents'); ?>">
                     <span class="text-danger"><?php echo form_error('documents'); ?></span>

@@ -490,9 +490,9 @@ class Report_model extends CI_Model
         $field_variable = (empty($field_var_array)) ? "" : "," . implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array)) ? "" : "," . implode(',', $custom_field_column_array);
         $this->datatables
-            ->select('income.id,income.name,income.invoice_no,income.date,income.amount, income_head.income_category,income.amount,income_head.id as head_id' . $field_variable)
-            ->searchable('income_head.income_category,income.id,income.name,income.date,income.invoice_no,income.amount' . $custom_field_column)
-            ->orderable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column)
+            ->select('income.id,income.name,income.invoice_no,income.date,income.amount, income_head.income_category,income.amount,income.payment_mode,income_head.id as head_id' . $field_variable)
+            ->searchable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column . ',income.payment_mode,income.amount')
+            ->orderable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column . ',income.payment_mode,income.amount')
             ->join('income_head', 'income.inc_head_id = income_head.id')
             ->where('income.date >=', $start_date)
             ->where('income.date <=', $end_date)

@@ -22,6 +22,26 @@ class Expense extends Admin_Controller
         $this->load->helper('customfield_helper');
     }
 
+    public function valid_payment_mode($mode)
+    {
+        if (!array_key_exists($mode, $this->config->item('payment_mode'))) {
+            $this->form_validation->set_message('valid_payment_mode', 'Please select a valid payment mode.');
+            return false;
+        }
+        return true;
+    }
+
+    public function valid_cheque_date($date)
+    {
+        $value = $this->customlib->dateFormatToYYYYMMDD($date);
+        $parts = explode('-', (string)$value);
+        if (count($parts) !== 3 || !checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) {
+            $this->form_validation->set_message('valid_cheque_date', 'Please enter a valid cheque date.');
+            return false;
+        }
+        return true;
+    }
+
     public function index()
     {
         if (!$this->module_lib->hasActive('expense')) {
@@ -102,6 +122,9 @@ class Expense extends Admin_Controller
                     }
                 }
                 //====================
+                $mode = $value->payment_mode ?? '';
+                $modes = $this->config->item('payment_mode');
+                $row[] = html_escape($modes[$mode] ?? ($mode ?: '-'));
                 $row[]     = $value->amount;
                 $row[]     = "<div class='white-space-nowrap'>" . $action . "</div>";
                 $dt_data[] = $row;
@@ -133,8 +156,16 @@ class Expense extends Admin_Controller
         $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('exdate', $this->lang->line('date'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('documents', $this->lang->line('documents'), 'callback_handle_upload|callback_validateCanUploadFile[documents]');
+        $this->form_validation->set_rules('payment_mode', $this->lang->line('payment_mode'), 'required|callback_valid_payment_mode');
+        if ($this->input->post('payment_mode', TRUE) === 'Cheque') {
+            $this->form_validation->set_rules('cheque_no', $this->lang->line('cheque_no'), 'trim|required|xss_clean');
+            $this->form_validation->set_rules('cheque_date', $this->lang->line('cheque_date'), 'trim|required|callback_valid_cheque_date');
+        }
         if ($this->form_validation->run() == false) {
             $msg = array(
+                'payment_mode' => form_error('payment_mode'),
+                'cheque_no' => form_error('cheque_no'),
+                'cheque_date' => form_error('cheque_date'),
                 'exp_head_id' => form_error('exp_head_id'),
                 'name'        => form_error('name'),
                 'exdate'        => form_error('exdate'),
@@ -164,6 +195,9 @@ class Expense extends Admin_Controller
                 'name'         => $this->input->post('name', TRUE),
                 'date'         => $this->customlib->dateFormatToYYYYMMDD($exdate),
                 'amount'       => $this->input->post('amount', TRUE),
+                'payment_mode' => $this->input->post('payment_mode', TRUE),
+                'cheque_no' => $this->input->post('payment_mode', TRUE) === 'Cheque' ? $this->input->post('cheque_no', TRUE) : null,
+                'cheque_date' => $this->input->post('payment_mode', TRUE) === 'Cheque' ? $this->customlib->dateFormatToYYYYMMDD($this->input->post('cheque_date', TRUE)) : null,
                 'invoice_no'   => $this->input->post('invoice_no', TRUE),
                 'note'         => $this->input->post('description', TRUE),
                 'documents'    => $this->input->post('documents', TRUE),
@@ -366,8 +400,16 @@ class Expense extends Admin_Controller
         $this->form_validation->set_rules('amount', $this->lang->line('amount'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('date', $this->lang->line('date'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('payment_mode', $this->lang->line('payment_mode'), 'required|callback_valid_payment_mode');
+        if ($this->input->post('payment_mode', TRUE) === 'Cheque') {
+            $this->form_validation->set_rules('cheque_no', $this->lang->line('cheque_no'), 'trim|required|xss_clean');
+            $this->form_validation->set_rules('cheque_date', $this->lang->line('cheque_date'), 'trim|required|callback_valid_cheque_date');
+        }
         if ($this->form_validation->run() == false) {
             $msg = array(
+                'payment_mode' => form_error('payment_mode'),
+                'cheque_no' => form_error('cheque_no'),
+                'cheque_date' => form_error('cheque_date'),
                 'exp_head_id' => form_error('exp_head_id'),
                 'amount'      => form_error('amount'),
                 'name'        => form_error('name'),
@@ -400,6 +442,9 @@ class Expense extends Admin_Controller
                 'invoice_no'   => $this->input->post('invoice_no', TRUE),
                 'date'         => $this->customlib->dateFormatToYYYYMMDD($exdate),
                 'amount'       => $this->input->post('amount', TRUE),
+                'payment_mode' => $this->input->post('payment_mode', TRUE),
+                'cheque_no' => $this->input->post('payment_mode', TRUE) === 'Cheque' ? $this->input->post('cheque_no', TRUE) : null,
+                'cheque_date' => $this->input->post('payment_mode', TRUE) === 'Cheque' ? $this->customlib->dateFormatToYYYYMMDD($this->input->post('cheque_date', TRUE)) : null,
                 'note'         => $this->input->post('description', TRUE),
                 'generated_by' => $this->customlib->getLoggedInUserID(),
             );
@@ -575,6 +620,9 @@ class Expense extends Admin_Controller
                     }
                 }
                 //====================
+                $mode = trim($value->payment_mode ?? '') ?: 'Cash';
+                $modes = $this->config->item('payment_mode');
+                $row[] = html_escape($modes[$mode] ?? $mode);
                 $row[]     = $value->amount;
                 $dt_data[] = $row;
             }
@@ -588,6 +636,7 @@ class Expense extends Admin_Controller
                     $footer_row[] = "";
                 }
             }
+            $footer_row[] = "";
             $footer_row[] = "<b>" . $this->lang->line('total_amount') . "</b>" . ':';
             $footer_row[] = "<b>" . $currency_symbol . (number_format($total_amount, 2, '.', '')) . "<br/>";
             $dt_data[]    = $footer_row;
@@ -724,6 +773,9 @@ class Expense extends Admin_Controller
                     }
                 }
 
+                $mode = trim($value->payment_mode ?? '') ?: 'Cash';
+                $modes = $this->config->item('payment_mode');
+                $row[] = html_escape($modes[$mode] ?? $mode);
                 $row[]      = $value->amount;
                 $dt_data[]  = $row;
                 $exphead_id = $value->exp_head_id;
@@ -744,6 +796,7 @@ class Expense extends Admin_Controller
                 }
             }
                     $amount_row[] = "";
+            $amount_row[] = "";
                     $amount_row[] = "<b>" . $this->lang->line('subtotal') .': '.$currency_symbol . $sub_total . "</b>";
                     $dt_data[]    = $amount_row;
                 }
@@ -763,6 +816,7 @@ class Expense extends Admin_Controller
                     $footer_row[] = "";
                 }
             }
+            $footer_row[] = "";
             $footer_row[] = "<b>" . $this->lang->line('total') .": ". $grand_total ."</b>";
            
             $dt_data[]    = $footer_row;

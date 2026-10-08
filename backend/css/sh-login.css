@@ -511,3 +511,14 @@ svg { display: block; }
 @media (max-width: 768px) {
   .lp-wrap { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Keep the portal badge above the banner, aligned to the panel's right edge. */
+.lp-brand-header { flex-shrink: 0; position: relative; }
+.lp-admin-portal {
+  position: absolute;
+  right: -32px;
+  bottom: -16px;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}

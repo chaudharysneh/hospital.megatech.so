@@ -380,10 +380,10 @@ class Transaction_model extends MY_Model
               " . $txn_cond;
 
         $part2 = "SELECT income.id,
-                   '' AS type,
+                   'payment' AS type,
                    income.amount,
                    CONCAT(income.date, ' 00:00:00') AS payment_date,
-                   '' AS payment_mode,
+                   COALESCE(NULLIF(TRIM(income.payment_mode), ''), 'Cash') AS payment_mode,
                    'income' AS ward,
                    NULL AS reference,
                    'Income' AS section,
@@ -400,10 +400,10 @@ class Transaction_model extends MY_Model
               " . $inc_cond;
 
         $part3 = "SELECT expenses.id,
-                   '' AS type,
+                   'payment' AS type,
                    -expenses.amount AS amount,
                    CONCAT(expenses.date, ' 00:00:00') AS payment_date,
-                   '' AS payment_mode,
+                   COALESCE(NULLIF(TRIM(expenses.payment_mode), ''), 'Cash') AS payment_mode,
                    'expenses' AS ward,
                    NULL AS reference,
                    'Expense' AS section,
@@ -1505,10 +1505,10 @@ class Transaction_model extends MY_Model
         $field_variable = (empty($field_var_array))? "": ",".implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array))? "": ",".implode(',', $custom_field_column_array);
 
-         $sql="select income.id,income.invoice_no,income.name as invoice_name,income.amount,income.date as payment_date, income.name,income_head.income_category,staff.name,staff.surname,staff.employee_id ".$field_variable." from income LEFT JOIN income_head on income_head.id = income.inc_head_id LEFT JOIN staff on staff.id = income.generated_by ".$custom_join." where date_format(income.date,'%Y-%m-%d') >='". $start_date."'and date_format(income.date,'%Y-%m-%d') <= '".$end_date."'" ;
+         $sql="select income.id,income.invoice_no,income.name as invoice_name,income.payment_mode,income.amount,income.date as payment_date, income.name,income_head.income_category,staff.name,staff.surname,staff.employee_id ".$field_variable." from income LEFT JOIN income_head on income_head.id = income.inc_head_id LEFT JOIN staff on staff.id = income.generated_by ".$custom_join." where date_format(income.date,'%Y-%m-%d') >='". $start_date."'and date_format(income.date,'%Y-%m-%d') <= '".$end_date."'" ;
              $this->datatables->query($sql) 
-              ->searchable('income.name,income.invoice_no,income_head.income_category,income.date '.$custom_field_column.',income.id')
-              ->orderable('income.name,income.invoice_no,income_head.income_category,income.date '.$custom_field_column.',income.id')
+              ->searchable('income.name,income.invoice_no,income_head.income_category,income.date '.$custom_field_column.',income.payment_mode,income.amount')
+              ->orderable('income.name,income.invoice_no,income_head.income_category,income.date '.$custom_field_column.',income.payment_mode,income.amount')
               ->sort('date_format(income.date, "%m/%e/%Y")','desc')
               ->query_where_enable(TRUE);
         return $this->datatables->generate('json');
@@ -1551,10 +1551,10 @@ class Transaction_model extends MY_Model
         $field_variable = (empty($field_var_array))? "": ",".implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array))? "": ",".implode(',', $custom_field_column_array);
         
-         $sql="select expenses.id,expenses.invoice_no,expenses.amount,expense_head.exp_category,expenses.date as payment_date, expenses.name as expense_name,staff.name,staff.surname ".$field_variable."  from expenses LEFT JOIN expense_head on expense_head.id = expenses.exp_head_id  LEFT JOIN staff on staff.id = expenses.generated_by ".$custom_join." where date_format(expenses.date,'%Y-%m-%d') >='". $start_date."'and date_format(expenses.date,'%Y-%m-%d') <= '".$end_date."'" ;
+         $sql="select expenses.id,expenses.invoice_no,expenses.payment_mode,expenses.amount,expense_head.exp_category,expenses.date as payment_date, expenses.name as expense_name,staff.name,staff.surname ".$field_variable."  from expenses LEFT JOIN expense_head on expense_head.id = expenses.exp_head_id  LEFT JOIN staff on staff.id = expenses.generated_by ".$custom_join." where date_format(expenses.date,'%Y-%m-%d') >='". $start_date."'and date_format(expenses.date,'%Y-%m-%d') <= '".$end_date."'" ;
              $this->datatables->query($sql) 
-              ->searchable('expenses.name,expenses.invoice_no,expense_head.exp_category,expenses.date'.$custom_field_column)
-              ->orderable('expenses.name,expenses.invoice_no,expense_head.exp_category,expenses.date'.$custom_field_column)
+              ->searchable('expenses.name,expenses.invoice_no,expense_head.exp_category,expenses.date'.$custom_field_column.',expenses.payment_mode,expenses.amount')
+              ->orderable('expenses.name,expenses.invoice_no,expense_head.exp_category,expenses.date'.$custom_field_column.',expenses.payment_mode,expenses.amount')
               ->sort('date_format(expenses.date, "%m/%e/%Y")','desc')
               ->query_where_enable(TRUE);
         return $this->datatables->generate('json');

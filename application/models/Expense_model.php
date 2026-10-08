@@ -22,7 +22,7 @@ class Expense_model extends MY_Model
         if (!empty($text)) {
             $this->db
                 ->select(
-                    "expenses.id,expenses.date,expenses.invoice_no,expenses.name,expenses.amount,expenses.documents,expenses.note,expense_head.exp_category,expenses.exp_head_id",
+                    "expenses.id,expenses.date,expenses.invoice_no,expenses.name,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.exp_category,expenses.exp_head_id",
                 )
                 ->from("expenses");
             $this->db->join(
@@ -36,7 +36,7 @@ class Expense_model extends MY_Model
         } else {
             $this->db
                 ->select(
-                    "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.note,expense_head.exp_category,expenses.exp_head_id",
+                    "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.exp_category,expenses.exp_head_id",
                 )
                 ->from("expenses");
             $this->db->join(
@@ -54,7 +54,7 @@ class Expense_model extends MY_Model
     {
         $this->db
             ->select(
-                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.note,expense_head.exp_category,expenses.exp_head_id",
+                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.exp_category,expenses.exp_head_id",
             )
             ->from("expenses");
         $this->db->join(
@@ -171,7 +171,7 @@ class Expense_model extends MY_Model
     {
         $this->db
             ->select(
-                "expenses.id,expenses.session_id,expenses.invoice_no,expenses.amount,expenses.documents,expenses.note,expense_head.class,feetype.type",
+                "expenses.id,expenses.session_id,expenses.invoice_no,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.class,feetype.type",
             )
             ->from("expenses");
         $this->db->join("expense_head", "expenses.class_id = expense_head.id");
@@ -435,7 +435,7 @@ class Expense_model extends MY_Model
 
         $this->datatables
             ->select(
-                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.note,expense_head.exp_category,expenses.exp_head_id,generated_by_staff.name as generated_byname,generated_by_staff.surname as generated_bysurname,generated_by_staff.employee_id as generated_byemployee_id" .
+                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.exp_category,expenses.exp_head_id,generated_by_staff.name as generated_byname,generated_by_staff.surname as generated_bysurname,generated_by_staff.employee_id as generated_byemployee_id" .
                     $field_variable,
             )
             ->searchable(
@@ -510,7 +510,7 @@ class Expense_model extends MY_Model
 
         $this->datatables
             ->select(
-                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.note,expense_head.exp_category,expenses.exp_head_id" .
+                "expenses.id,expenses.date,expenses.name,expenses.invoice_no,expenses.amount,expenses.documents,expenses.payment_mode,expenses.cheque_no,expenses.cheque_date,expenses.note,expense_head.exp_category,expenses.exp_head_id" .
                     $field_variable,
             )
             ->searchable(

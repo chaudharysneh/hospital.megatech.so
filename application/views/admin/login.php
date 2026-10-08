@@ -27,6 +27,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
   <!-- LEFT: Brand / pitch / news -->
   <div class="lp-brand">
 
+    <div class="lp-brand-header">
     <div class="lp-logo-row">
       <div class="lp-logo-mark">
         <?php if (!empty($mini_logo)): ?>
@@ -38,13 +39,17 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
       <div class="lp-logo-name"><?php echo html_escape($title_name); ?></div>
     </div>
 
+      <div class="lp-admin-portal">
+        <div class="lp-badge"><span class="dot"></span><?php echo $this->lang->line('admin_portal') ?: 'Admin Portal'; ?></div>
+      </div>
+    </div>
+
     <?php if (!empty($logoresult['login_banner'])): ?>
     <div class="lp-login-banner">
       <img loading="eager" fetchpriority="high" decoding="async" src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_banner'])); ?>" alt="<?php echo html_escape($title_name); ?> banner">
     </div>
     <?php else: ?>
     <div class="lp-pitch">
-      <div class="lp-badge"><span class="dot"></span><?php echo $this->lang->line('admin_portal') ?: 'Admin Portal'; ?></div>
 
       <?php if (!empty($notice)): ?>
         <div class="lp-news">

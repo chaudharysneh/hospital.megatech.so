@@ -78,6 +78,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                     <th><?php echo $fields_value->name; ?></th>
                                 <?php }
                             } ?>
+                            <th><?php echo $this->lang->line('payment_mode'); ?></th>
                             <th class="text-end" width="10%"><?php echo $this->lang->line('amount'); ?> <span><?php echo "(" . $currency_symbol . ")"; ?></span></th>
                         </tr>
                     </thead>
