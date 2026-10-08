@@ -808,6 +808,7 @@ class Report_model extends CI_Model
         $ex_cond = "";
         $rp_cond = "";
         $ps_cond = "";
+        $purchase_cond = "";
 
         if ($start_date != null && $end_date != null) {
             $s = $this->db->escape_str($start_date);
@@ -816,6 +817,7 @@ class Report_model extends CI_Model
             $in_cond = " AND i.date >= '$s' AND i.date <= '$e'";
             $ex_cond = " AND e.date >= '$s' AND e.date <= '$e'";
             $rp_cond = " AND DATE(rp.date) >= '$s' AND DATE(rp.date) <= '$e'";
+            $purchase_cond = " AND DATE(purchase.payment_date) >= '$s' AND DATE(purchase.payment_date) <= '$e'";
             $ps_cond = " AND DATE(ss.payment_date) >= '$s' AND DATE(ss.payment_date) <= '$e'";
         }
 
@@ -868,6 +870,20 @@ class Report_model extends CI_Model
                 ss.net_salary AS expense_out
             FROM staff_payslip ss
             WHERE ss.status = 'paid' {$ps_cond}
+
+            UNION ALL
+
+            SELECT
+                DATE(purchase.payment_date) AS record_date,
+                'Medicine Purchase' AS inc_exp_head,
+                0 AS income_in,
+                purchase.net_amount AS expense_out
+            FROM supplier_bill_basic purchase
+            WHERE purchase.net_amount > 0
+              AND purchase.payment_date IS NOT NULL
+              AND purchase.payment_date > '1000-01-01'
+              AND purchase.payment_mode IN ('Cash', 'Cheque', 'transfer_to_bank_account', 'UPI', 'Online', 'Other')
+              {$purchase_cond}
         ) AS combined
         GROUP BY record_date, inc_exp_head
         ORDER BY record_date ASC, inc_exp_head ASC";
