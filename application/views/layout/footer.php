@@ -284,7 +284,7 @@
 <script src="<?php echo base_url('backend/dist/datatables/js/dataTables.responsive.min.js'); ?>"></script>
 
 <!-- ss.custom.js — contains initDatatable() used by ALL server-side tables -->
-<script src="<?php echo base_url('backend/dist/datatables/js/ss.custom.js'); ?>?v=20260624b"></script>
+<script src="<?php echo base_url('backend/dist/datatables/js/ss.custom.js'); ?>?v=20261008allborders"></script>
 
 <!-- moment.js — must load before datetime-moment.js and datetimepicker -->
 <script src="<?php echo base_url('backend/dist/js/moment.min.js'); ?>"></script>

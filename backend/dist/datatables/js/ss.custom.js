@@ -1,3 +1,60 @@
+// Apply export borders centrally, including reports with their own button settings.
+(function ($) {
+    var buttons = $.fn.dataTable.ext.buttons;
+    function wrapExport(name, customizeExport) {
+        var button = buttons[name];
+        if (!button || typeof button.action !== 'function') return;
+        var originalAction = button.action;
+        button.action = function (event, dt, node, config) {
+            var exportConfig = $.extend({}, config);
+            var originalCustomize = config.customize;
+            exportConfig.customize = function () {
+                if (typeof originalCustomize === 'function') {
+                    originalCustomize.apply(this, arguments);
+                }
+                customizeExport(arguments[0]);
+            };
+            return originalAction.call(this, event, dt, node, exportConfig);
+        };
+    }
+    wrapExport('print', function (win) {
+        $(win.document.head).append('<style>body.dt-print-view table{border-collapse:collapse!important;}body.dt-print-view table thead{display:table-header-group;}body.dt-print-view table thead th{border-top:1px solid #000!important;}</style>');
+    });
+    wrapExport('pdfHtml5', function (doc) {
+        function visit(items) {
+            (items || []).forEach(function (item) {
+                if (!item || typeof item !== 'object') return;
+                if (item.table) {
+                    var previous = item.layout;
+                    var layout = typeof previous === 'object' && previous ? $.extend({}, previous) : {};
+                    var width = layout.hLineWidth;
+                    var color = layout.hLineColor;
+                    layout.hLineWidth = function (i, table) {
+                        if (i === 0) return 1;
+                        if (typeof width === 'function') return width(i, table);
+                        if (previous === 'noBorders') return 0;
+                        if (previous === 'headerLineOnly') return i === table.table.headerRows ? 2 : 0;
+                        if (previous === 'lightHorizontalLines') return i === table.table.body.length ? 0 : (i === table.table.headerRows ? 2 : 1);
+                        return 1;
+                    };
+                    layout.hLineColor = function (i, table) {
+                        if (i === 0) return '#000000';
+                        if (typeof color === 'function') return color(i, table);
+                        return previous === 'lightHorizontalLines' && i !== table.table.headerRows ? '#aaa' : '#000000';
+                    };
+                    if (typeof previous === 'string') {
+                        layout.vLineWidth = function () { return 0; };
+                    }
+                    item.layout = layout;
+                }
+                if (item.stack) visit(item.stack);
+                if (item.columns) visit(item.columns);
+            });
+        }
+        visit(doc.content);
+    });
+})(jQuery);
+
 $(document).ready(function () {
     $('.example').each(function () {
         var $tbl = $(this);
@@ -5,6 +62,7 @@ $(document).ready(function () {
         // (same convention as initDatatable); fall back to the first .download_label
         // so every existing page keeps its current behaviour.
         var exportTitle = $tbl.data('exportTitle') || $('.download_label').html();
+        var blackExportBorder = $tbl.attr('data-export-black-border') === 'true';
         $tbl.DataTable({
             "aaSorting": [],
             rowReorder: {
@@ -50,6 +108,22 @@ $(document).ready(function () {
                     text: '<i class="fa fa-file-pdf-o"></i>',
                     titleAttr: 'PDF',
                     title: exportTitle,
+                    customize: function (doc) {
+                        if (!blackExportBorder) return;
+                        doc.content.forEach(function (item) {
+                            if (!item.table) return;
+                            item.layout = {
+                                hLineWidth: function () { return 0.75; },
+                                vLineWidth: function () { return 0.75; },
+                                hLineColor: function () { return '#000000'; },
+                                vLineColor: function () { return '#000000'; },
+                                paddingLeft: function () { return 8; },
+                                paddingRight: function () { return 8; },
+                                paddingTop: function () { return 6; },
+                                paddingBottom: function () { return 6; }
+                            };
+                        });
+                    },
                     exportOptions: {
                     columns: ["thead th:not(.noExport)"]
                   }
@@ -61,6 +135,10 @@ $(document).ready(function () {
                     titleAttr: 'Print',
                     title: exportTitle,
                  customize: function ( win ) {
+
+                    if (blackExportBorder) {
+                        $(win.document.head).append('<style>body.dt-print-view table{border-collapse:collapse!important;}body.dt-print-view table thead{display:table-header-group;}body.dt-print-view table thead th{border-top:1px solid #000!important;}</style>');
+                    }
 
                     $(win.document.body).find('th').addClass('display').css('text-align', 'left');
                     $(win.document.body).find('td').addClass('display').css('text-align', 'left');

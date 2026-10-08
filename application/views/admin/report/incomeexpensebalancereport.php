@@ -61,7 +61,7 @@ $date_format     = $this->customlib->getHospitalDateFormat();
             </div>
             <div class="card-body table-responsive pt-0">
                 <div class="download_label"><?php echo $this->lang->line('income_expense_balance_report'); ?></div>
-                <table class="table table-striped table-bordered table-hover example" id="iebr_table" cellspacing="0" width="100%"
+                <table class="table table-striped table-bordered table-hover example" data-export-black-border="true" id="iebr_table" cellspacing="0" width="100%"
                     data-export-title="<?php echo $this->lang->line('income_expense_balance_report'); ?>">
                     <thead>
                         <tr>

@@ -801,7 +801,7 @@ class Report_model extends CI_Model
         return $this->datatables->generate('json');
     }
 
-    public function getIncomeExpenseBalanceReport($start_date = null, $end_date = null)
+    public function getIncomeExpenseBalanceReport($start_date = null, $end_date = null, $group_by = null)
     {
         $dt_cond = "";
         $in_cond = "";
@@ -821,7 +821,15 @@ class Report_model extends CI_Model
             $ps_cond = " AND DATE(ss.payment_date) >= '$s' AND DATE(ss.payment_date) <= '$e'";
         }
 
-        $sql = "SELECT record_date, inc_exp_head, SUM(income_in) AS income_in, SUM(expense_out) AS expense_out
+        // Only fixed expressions are used; the daily report remains the default.
+        $period_expression = 'record_date';
+        if ($group_by === 'monthly') {
+            $period_expression = "DATE_FORMAT(record_date, '%Y-%m-01')";
+        } elseif ($group_by === 'yearly') {
+            $period_expression = "DATE_FORMAT(record_date, '%Y-01-01')";
+        }
+
+        $sql = "SELECT {$period_expression} AS record_date, inc_exp_head, SUM(income_in) AS income_in, SUM(expense_out) AS expense_out
         FROM (
             SELECT
                 DATE(t.payment_date) AS record_date,
@@ -885,7 +893,7 @@ class Report_model extends CI_Model
               AND purchase.payment_mode IN ('Cash', 'Cheque', 'transfer_to_bank_account', 'UPI', 'Online', 'Other')
               {$purchase_cond}
         ) AS combined
-        GROUP BY record_date, inc_exp_head
+        GROUP BY {$period_expression}, inc_exp_head
         ORDER BY record_date ASC, inc_exp_head ASC";
 
         $result = $this->db->query($sql);

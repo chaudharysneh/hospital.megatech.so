@@ -359,6 +359,24 @@ class Report extends Admin_Controller
         $this->load->view('layout/footer', $data);
     }
 
+    public function incomestatementreport()
+    {
+        if (!$this->rbac->hasPrivilege('income_expense_balance_report', 'can_view')) {
+            access_denied();
+        }
+        $this->session->set_userdata('top_menu', 'Reports');
+        $this->session->set_userdata('sub_menu', 'reports/finance');
+        $this->session->set_userdata('subsub_menu', 'admin/report/incomestatementreport');
+
+        $group_by = $this->input->post('group_by', TRUE);
+        $data['group_by'] = $group_by === 'yearly' ? 'yearly' : 'monthly';
+        $data['report_data'] = $this->report_model->getIncomeExpenseBalanceReport(null, null, $data['group_by']);
+        $data['module'] = 'reports';
+        $this->load->view('layout/header', $data);
+        $this->load->view('admin/report/incomestatementreport', $data);
+        $this->load->view('layout/footer', $data);
+    }
+
     public function incomeexpensebalancereport()
     {
         if (!$this->rbac->hasPrivilege('income_expense_balance_report', 'can_view')) {

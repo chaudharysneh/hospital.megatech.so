@@ -69,6 +69,7 @@
 		<?php } if ($this->rbac->hasPrivilege('income_expense_balance_report', 'can_view')) { ?>
 
 			<li class="col-lg-4 col-md-4 col-sm-6 <?php echo set_SubSubmenu('admin/report/incomeexpensebalancereport'); ?>"><a href="<?php echo base_url(); ?>admin/report/incomeexpensebalancereport"><i class="fa fa-file-text-o"></i> <?php echo $this->lang->line('income_expense_balance_report') ?></a></li>
+            <li class="col-lg-4 col-md-4 col-sm-6 <?php echo set_SubSubmenu('admin/report/incomestatementreport'); ?>"><a href="<?php echo base_url(); ?>admin/report/incomestatementreport"><i class="fa fa-file-text-o"></i> Monthly/Yearly Income Statement Report</a></li>
 
 		<?php } ?>
 

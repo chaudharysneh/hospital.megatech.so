@@ -177,7 +177,7 @@
 <script src="<?php echo base_url('backend/dist/datatables/js/buttons.print.min.js'); ?>"></script>
 <script src="<?php echo base_url('backend/dist/datatables/js/buttons.colVis.min.js'); ?>"></script>
 <script src="<?php echo base_url('backend/dist/datatables/js/dataTables.responsive.min.js'); ?>"></script>
-<script src="<?php echo base_url('backend/dist/datatables/js/ss.custom.js'); ?>?v=20260624b"></script>
+<script src="<?php echo base_url('backend/dist/datatables/js/ss.custom.js'); ?>?v=20261008allborders"></script>
 
 <!-- Toastr notifications -->
 <script src="<?php echo base_url('backend/toast-alert/toastr.js'); ?>"></script>
