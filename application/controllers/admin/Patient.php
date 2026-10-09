@@ -1022,9 +1022,6 @@ This Function is used to Add Patient
     {
         $custom_fields = $this->customfield_model->getByBelong('patient');
 
-        if ((int) $_POST['age']['day'] == 0 && (int) $_POST['age']['month'] == 0 && (int) $_POST['age']['year'] == 0) {
-            $this->form_validation->set_rules('age', $this->lang->line('age'), 'trim|required|xss_clean|');
-        }
 
         foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
             if ($custom_fields_value['validation']) {
@@ -1052,9 +1049,10 @@ This Function is used to Add Patient
         $this->form_validation->set_rules('email', $this->lang->line('email'), 'trim|valid_email|xss_clean');
         $this->form_validation->set_rules('mobileno', $this->lang->line('phone'), 'trim|numeric|xss_clean');
         $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('age[year]', $this->lang->line('year'), 'trim|required|xss_clean|numeric');
-        $this->form_validation->set_rules('age[month]', $this->lang->line('month'), 'trim|required|xss_clean|numeric');
-        $this->form_validation->set_rules('age[day]', $this->lang->line('day'), 'trim|required|xss_clean|numeric');
+        $this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('age[year]', $this->lang->line('year'), 'trim|xss_clean|numeric');
+        $this->form_validation->set_rules('age[month]', $this->lang->line('month'), 'trim|xss_clean|numeric');
+        $this->form_validation->set_rules('age[day]', $this->lang->line('day'), 'trim|xss_clean|numeric');
         $this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_upload|callback_validateCanUploadFile[file]');
         $this->form_validation->set_rules('validate_resource', $this->lang->line('patient'), 'callback_validateCanAddNewResource[no_of_patient,1]');
 
@@ -1062,7 +1060,7 @@ This Function is used to Add Patient
 
             $msg = array(
                 'name'       => form_error('name'),
-                'age'        => form_error('age'),
+                'gender'        => form_error('gender'),
                 'age[year]'  => form_error('age[year]'),
                 'age[month]' => form_error('age[month]'),
                 'age[day]'   => form_error('age[day]'),
@@ -1172,9 +1170,9 @@ This Function is used to Add Patient
                 'insurance_validity'    => $validity,
                 'note'                  => $this->input->post('note', TRUE),
                 'dob'                   => $dob,
-                'age'                   => $this->input->post('age[year]', TRUE),
-                'month'                 => $this->input->post('age[month]', TRUE),
-                'day'                   => $this->input->post('age[day]', TRUE),
+                'age'                   => ($this->input->post('age[year]', TRUE) ?: 0),
+                'month'                 => ($this->input->post('age[month]', TRUE) ?: 0),
+                'day'                   => ($this->input->post('age[day]', TRUE) ?: 0),
                 'as_of_date'            => date("Y-m-d"),
                 'identification_number' => $this->input->post('identification_number', TRUE),
                 'is_active'             => 'yes',
@@ -4024,11 +4022,6 @@ This Function is used to Import Multiple Patient Records
         if (!$this->rbac->hasPrivilege('patient', 'can_edit')) {
             access_denied();
         }
-        if (isset($_POST['age'])) {
-            if (count(array_filter($this->input->post('age', TRUE) ?: [])) == 0) {
-                $this->form_validation->set_rules('age', $this->lang->line('age'), 'trim|required|xss_clean|');
-            }
-        }
 
         $patient_type  = $this->customlib->getPatienttype();
         $custom_fields = $this->customfield_model->getByBelong('patient');
@@ -4059,14 +4052,15 @@ This Function is used to Import Multiple Patient Records
         }
 
         $this->form_validation->set_rules('name', $this->lang->line('name'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('gender', $this->lang->line('gender'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('file', $this->lang->line('image'), 'callback_handle_upload|callback_validateCanUploadFile[file]');
-        $this->form_validation->set_rules('age[year]', $this->lang->line('year'), 'trim|required|xss_clean|numeric');
-        $this->form_validation->set_rules('age[month]', $this->lang->line('month'), 'trim|required|xss_clean|numeric');
-        $this->form_validation->set_rules('age[day]', $this->lang->line('day'), 'trim|required|xss_clean|numeric');
+        $this->form_validation->set_rules('age[year]', $this->lang->line('year'), 'trim|xss_clean|numeric');
+        $this->form_validation->set_rules('age[month]', $this->lang->line('month'), 'trim|xss_clean|numeric');
+        $this->form_validation->set_rules('age[day]', $this->lang->line('day'), 'trim|xss_clean|numeric');
         if ($this->form_validation->run() == false) {
             $msg = array(
                 'name'              => form_error('name'),
-                'age'               => form_error('age'),
+                'gender'               => form_error('gender'),
                 'age[year]'         => form_error('age[year]'),
                 'age[month]'        => form_error('age[month]'),
                 'age[day]'          => form_error('age[day]'),
@@ -4127,9 +4121,9 @@ This Function is used to Import Multiple Patient Records
                 'guardian_name'         => $this->input->post('guardian_name', TRUE),
                 'address'               => $this->input->post('address', TRUE),
                 'note'                  => $this->input->post('note', TRUE),
-                'age'                   => $this->input->post('age[year]', TRUE),
-                'month'                 => $this->input->post('age[month]', TRUE),
-                'day'                   => $this->input->post('age[day]', TRUE),
+                'age'                   => ($this->input->post('age[year]', TRUE) ?: 0),
+                'month'                 => ($this->input->post('age[month]', TRUE) ?: 0),
+                'day'                   => ($this->input->post('age[day]', TRUE) ?: 0),
                 'insurance_id'          => $this->input->post('insurance_id', TRUE),
                 'identification_number' => $this->input->post('identification_number', TRUE),
                 'insurance_validity'    => $validity,

@@ -42,7 +42,7 @@ $marital_status = $this->config->item('marital_status');
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label"><?php echo $this->lang->line('gender'); ?></label>
+                                            <label class="form-label"><?php echo $this->lang->line('gender'); ?><small class="req"> *</small></label>
                                             <select class="form-control" name="gender" id="addformgender">
                                                 <option value=""><?php echo $this->lang->line('select'); ?></option>
                                                 <?php foreach ($genderList as $key => $value) { ?>
@@ -59,7 +59,7 @@ $marital_status = $this->config->item('marital_status');
                                     </div>
                                     <div class="col-md-4" id="calculate">
                                         <div class="form-group">
-                                            <label class="form-label"><?php echo $this->lang->line('age') . ' (' . $this->lang->line('yy_mm_dd') . ')'; ?><small class="req"> *</small></label>
+                                            <label class="form-label"><?php echo $this->lang->line('age') . ' (' . $this->lang->line('yy_mm_dd') . ')'; ?></label>
                                             <div class="row g-1">
                                                 <div class="col-4">
                                                     <input type="text" placeholder="<?php echo $this->lang->line('year'); ?>" name="age[year]" id="age_year" class="form-control patient_age_year">
