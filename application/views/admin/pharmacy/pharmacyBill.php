@@ -259,7 +259,7 @@ foreach ($medicineCategory as $dkey => $med_cat_value) {
                __this.find('.discount').val(discount.toFixed(2));
                __this.find('.tax').val(total_tax_amount.toFixed(2));
                __this.find('.net_amount').val(net_amount.toFixed(2));
-               __this.find('.payment_amount').val(net_amount.toFixed(2));
+               set_bill_payment_amount(__this.find('.payment_amount'), net_amount);
         }        
   
 </script>
@@ -711,7 +711,7 @@ var table = document.getElementById("tableID");
         $('.total').val(grandTotal.toFixed(2));
         $('.tax').val(total_tax_amount.toFixed(2));
         $('.net_amount').val(net_amount.toFixed(2));
-        $('.payment_amount').val(net_amount.toFixed(2));
+        set_bill_payment_amount($('.payment_amount'), net_amount);
     }
 
     function amount_settlement(net_amount){
@@ -725,7 +725,7 @@ var table = document.getElementById("tableID");
       get_percentage(discount_amount);
       net_amount=((parseInt(total)-parseInt(discount_amount))+parseInt(tax));
         $('#net_amount').val(net_amount.toFixed(2));
-        $('#payment_amount').val(net_amount.toFixed(2));
+        set_bill_payment_amount($('#payment_amount'), net_amount);
       }
     }
 
@@ -960,8 +960,19 @@ var table = document.getElementById("tableID");
         });
     });
     
+    function set_bill_payment_amount(fields, amount) {
+        fields.each(function () {
+            var field = $(this);
+            var pending = field.closest('form').find('[name="payment_mode"]').val() === 'Pending';
+            field.val(pending ? '0.00' : amount.toFixed(2));
+        });
+    }
+
     $(document).on('change','.payment_mode',function(){
       var mode=$(this).val();
+      var form = $(this).closest('form');
+      var amount = parseFloat(form.find('.net_amount').val()) || 0;
+      set_bill_payment_amount(form.find('.payment_amount'), amount);
       if(mode == "Cheque"){
         $('.cheque_div').removeClass('d-none');
       }else{

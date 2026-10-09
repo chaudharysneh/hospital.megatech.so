@@ -611,9 +611,9 @@ foreach ($testlist as $dkey => $testlist_value) {
 		var net_amount=((grandTotal-discount_amount)+total_tax_amount);           
 		__this.find('.tax').val(total_tax_amount.toFixed(2));
 		__this.find('.net_amount').val(net_amount.toFixed(2));
-		__this.find('.payment_amount').val(net_amount.toFixed(2));
-		__this.find('#payamount').val(net_amount.toFixed(2));
-		__this.find('#amount').val(net_amount.toFixed(2));
+		set_pathology_payment_amount(__this.find('.payment_amount'), net_amount);
+		set_pathology_payment_amount(__this.find('#payamount'), net_amount);
+		set_pathology_payment_amount(__this.find('#amount'), net_amount);
       
 		$("#billsave").show();
 		$(".printsavebtn").show();
@@ -651,9 +651,9 @@ foreach ($testlist as $dkey => $testlist_value) {
 		var net_amount=((grandTotal-discount_amount)+total_tax_amount);           
 		__this.find('.tax').val(total_tax_amount.toFixed(2));
 		__this.find('.net_amount').val(net_amount.toFixed(2));
-		__this.find('.payment_amount').val(net_amount.toFixed(2));
-		__this.find('#payamount').val(net_amount.toFixed(2));
-		__this.find('#amount').val(net_amount.toFixed(2));
+		set_pathology_payment_amount(__this.find('.payment_amount'), net_amount);
+		set_pathology_payment_amount(__this.find('#payamount'), net_amount);
+		set_pathology_payment_amount(__this.find('#amount'), net_amount);
       
 		$("#billsave").show();
 		$(".printsavebtn").show();
@@ -686,9 +686,9 @@ foreach ($testlist as $dkey => $testlist_value) {
         var net_amount = (parseFloat(total) - parseFloat(discount))+ parseFloat(total_taxamt);
         var cnet_amount = net_amount.toFixed(2)
         $("#net_amount").val(cnet_amount);
-        $("#amount").val(cnet_amount);
+        set_pathology_payment_amount($("#amount"), net_amount);
         $("#tax").val(total_taxamt.toFixed(2));
-        $("#payamount").val(cnet_amount);
+        set_pathology_payment_amount($("#payamount"), net_amount);
         $("#billsave").show();
         $(".printsavebtn").show();
 		}       
@@ -1268,8 +1268,19 @@ function updateDate(){
 	}
 
 
+    function set_pathology_payment_amount(fields, amount) {
+        fields.each(function () {
+            var field = $(this);
+            var pending = field.closest('form').find('[name="payment_mode"]').val() === 'Pending';
+            field.val(pending ? '0.00' : amount.toFixed(2));
+        });
+    }
+
     $(document).on('change','.payment_mode',function(){
       var mode=$(this).val();
+      var form = $(this).closest('form');
+      var amount = parseFloat(form.find('.net_amount').val()) || 0;
+      set_pathology_payment_amount(form.find('.payment_amount, #payamount'), amount);
       if(mode == "Cheque"){
          $('.filestyle','#addPaymentModal').dropify();
         $('.cheque_div').removeClass('d-none');
