@@ -64,6 +64,10 @@ $config['payroll_status'] = array(
 
 $config['payment_mode'] = array(
     'Cash'                     => lang('cash'),
+    'ZAAD'                     => 'ZAAD',
+    'eDahab'                   => 'eDahab',
+    'Pending'                  => lang('pending'),
+    'Premiere Wallet'          => 'Premiere Wallet',
     'Cheque'                   => lang('cheque'),
     'transfer_to_bank_account' => lang('transfer_to_bank_account'),
     'UPI'                      => lang('upi'),
