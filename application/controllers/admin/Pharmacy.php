@@ -690,7 +690,16 @@ class Pharmacy extends Admin_Controller
 
                 $row[] = $value->discount." (".amountFormat($discount_percentage)."%)";
                 $row[] = $value->tax." (".amountFormat($tax_percentage)."%)";
-                $row[] = $value->net_amount . $action;
+                $row[] = $value->net_amount;
+                
+                $balance_amount = ($value->net_amount - ($value->paid_amount + $value->returned_amount));
+                if ($balance_amount < 0) {
+                    $balance_amount = 0;
+                }
+                
+                $row[] = $value->paid_amount;
+                $row[] = $value->returned_amount;
+                $row[] = amountFormat($balance_amount) . $action;
                 //====================
 
                 $dt_data[] = $row;
@@ -2322,6 +2331,7 @@ class Pharmacy extends Admin_Controller
                 'discount'     => $this->input->post('discount', TRUE),
                 'tax'          => $this->input->post('tax', TRUE),
                 'net_amount'   => $this->input->post('net_amount', TRUE),
+                'paid_amount'  => $this->input->post('payment_amount', TRUE) != '' ? $this->input->post('payment_amount', TRUE) : 0,
                 'note'         => $this->input->post('note', TRUE),
                 'payment_mode' => $this->input->post('payment_mode', TRUE),
                 'payment_date' => date('Y-m-d H:i:s'),

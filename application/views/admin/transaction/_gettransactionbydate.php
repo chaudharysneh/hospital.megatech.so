@@ -20,7 +20,7 @@
                     <tr>
                         <td><?php echo html_escape($this->customlib->getSessionPrefixByType('transaction_id') . $dt_value->id); ?></td>
                         <td><?php echo html_escape($this->customlib->YYYYmmddTodateformat($dt_value->payment_date)); ?></td>
-                        <td><?php if ($dt_value->payment_mode) { echo $this->lang->line(strtolower($dt_value->payment_mode)); } ?></td>
+                        <td><?php if ($dt_value->payment_mode) { echo $this->lang->line(strtolower($dt_value->payment_mode)) ? $this->lang->line(strtolower($dt_value->payment_mode)) : $dt_value->payment_mode; } ?></td>
                         <td><?php echo html_escape(composeStaffNameByString($dt_value->name, $dt_value->surname, $dt_value->employee_id)); ?></td>
                         <td class="text-end"><?php echo amountFormat($dt_value->amount); ?></td>
                     </tr>

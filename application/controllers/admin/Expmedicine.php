@@ -394,6 +394,15 @@ class Expmedicine extends Admin_Controller
                 $row[] = number_format((float) $value->discount, 2);
                 $row[] = number_format((float) $value->tax, 2);
                 $row[] = number_format((float) $value->net_amount, 2);
+                
+                $balance_amount = ((float)$value->net_amount) - ((float)$value->paid_amount + (float)$value->returned_amount);
+                if ($balance_amount < 0) {
+                    $balance_amount = 0;
+                }
+                
+                $row[] = number_format((float) $value->paid_amount, 2);
+                $row[] = number_format((float) $value->returned_amount, 2);
+                $row[] = number_format($balance_amount, 2);
                 $row[] = html_escape($value->payment_mode);
                 $dt_data[] = $row;
             }

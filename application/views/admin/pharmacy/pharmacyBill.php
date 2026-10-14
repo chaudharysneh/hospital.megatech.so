@@ -967,7 +967,7 @@ var table = document.getElementById("tableID");
             field.val(pending ? '0.00' : amount.toFixed(2));
         });
     }
-
+    
     $(document).on('change','.payment_mode',function(){
       var mode=$(this).val();
       var form = $(this).closest('form');

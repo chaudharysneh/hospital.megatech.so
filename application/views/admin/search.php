@@ -220,7 +220,6 @@ $marital_status = $this->config->item('marital_status');
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label"><?php echo $this->lang->line('gender'); ?><small class="req"> *</small></label>
-                                
                                             <select class="form-control" name="gender" id="egenders">
                                                 <option value=""><?php echo $this->lang->line('select'); ?></option>
                                                 <?php foreach ($genderList as $key => $value) { ?>

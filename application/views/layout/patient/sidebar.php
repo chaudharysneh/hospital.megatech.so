@@ -57,7 +57,7 @@
             <?php if ($this->module_lib->hasActive('pathology') && $this->module_lib->hasPatientActive('pathology')): ?>
             <li class="nav-item <?php echo set_Topmenu('pathology'); ?>">
                 <a class="nav-link" href="<?php echo base_url('patient/dashboard/search'); ?>">
-                    <i class="fas fa-flask"></i><span> <?php echo $this->lang->line('pathology'); ?></span>
+                    <i class="fas fa-flask"></i><span> Clinical Laboratory</span>
                 </a>
             </li>
             <?php endif; ?>

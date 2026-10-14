@@ -284,7 +284,7 @@ class Staff_model extends MY_Model
         }
 
         if ($this->check_data_exists($name, $id, $staff_id)) {
-            $this->form_validation->set_message('check_exists', 'Record already exists');
+            $this->form_validation->set_message('check_exists', 'Already in use');
             return false;
         } else {
             return true;
@@ -310,6 +310,29 @@ class Staff_model extends MY_Model
                 return false;
             }
         }
+    }
+
+    public function getAutoEmployeeId()
+    {
+        $this->db->select('employee_id');
+        $this->db->from('staff');
+        $this->db->order_by('id', 'desc');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            $last_id = $row->employee_id;
+            
+            if (preg_match('/(.*?)([0-9]+)$/', $last_id, $matches)) {
+                $prefix = $matches[1];
+                $number = $matches[2];
+                $next_number = str_pad(intval($number) + 1, strlen($number), '0', STR_PAD_LEFT);
+                return $prefix . $next_number;
+            } else {
+                return $last_id . '1';
+            }
+        }
+        return '9001';
     }
 
     public function valid_email_id($str)

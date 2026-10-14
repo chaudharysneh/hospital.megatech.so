@@ -917,7 +917,7 @@ class Admin extends Admin_Controller
             $data['report_due_amount'] = (float)$due_summary['total_due'];
             $data['report_due_count'] = (int)$due_summary['unpaid_count'];
         }
-
+        
         // Pharmacy low-stock summary (Chunk 4)
         $this->load->model('pharmacy_model');
         $low_stock = $this->pharmacy_model->getLowStockSummary();

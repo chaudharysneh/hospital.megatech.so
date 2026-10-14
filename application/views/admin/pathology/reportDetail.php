@@ -290,7 +290,7 @@ $genderList = $this->customlib->getGender();
 foreach ($testlist as $dkey => $testlist_value) {
     ?>
     <option value='<?php echo $testlist_value["id"]; ?>'>
-        <?php echo $testlist_value["test_name"]." (".$testlist_value["short_name"].")"  ?>
+       <?php echo "(" . $testlist_value["short_name"] . ") " . $testlist_value["test_name"]  ?>
     </option>
     <?php
      }

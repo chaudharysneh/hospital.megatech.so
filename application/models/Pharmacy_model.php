@@ -924,7 +924,7 @@ class Pharmacy_model extends MY_Model
     public function getAllpharmacypurchaseRecord()
     {
         $this->datatables
-            ->select("supplier_bill_basic.*,medicine_supplier.supplier")
+            ->select("supplier_bill_basic.*, IFNULL((SELECT SUM(total_amount) FROM purchase_return_basic WHERE purchase_return_basic.supplier_bill_basic_id = supplier_bill_basic.id), 0) as returned_amount, medicine_supplier.supplier")
             ->join(
                 "medicine_supplier",
                 "medicine_supplier.id = supplier_bill_basic.supplier_id",
@@ -933,7 +933,7 @@ class Pharmacy_model extends MY_Model
                 "supplier_bill_basic.id,supplier_bill_basic.invoice_no,supplier",
             )
             ->orderable(
-                "supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.tax,supplier_bill_basic.discount,supplier_bill_basic.net_amount",
+                "supplier_bill_basic.id,supplier_bill_basic.date,supplier_bill_basic.invoice_no,supplier,supplier_bill_basic.total,supplier_bill_basic.discount,supplier_bill_basic.tax,supplier_bill_basic.net_amount,supplier_bill_basic.paid_amount,returned_amount,''",
             )
             ->sort("supplier_bill_basic.id", "desc")
             ->from("supplier_bill_basic");

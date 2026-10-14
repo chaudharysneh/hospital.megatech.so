@@ -135,7 +135,7 @@
                         ?>
                         <li class="nav-item <?php echo set_Topmenu('pathology'); ?>">
                             <a class="nav-link" href="<?php echo base_url(); ?>admin/pathology/gettestreportbatch">
-                                <i class="fas fa-flask"></i> <span><?php echo $this->lang->line('pathology'); ?></span>
+                                 <i class="fas fa-flask"></i> <span>Clinical Laboratory</span>
                             </a>
                         </li>
             <?php 
@@ -722,7 +722,7 @@
                             <?php } } if ($this->module_lib->hasActive('pathology')) {
                              if ($this->rbac->hasPrivilege('pathology_patient_report', 'can_view')) { ?>
                             
-                                <li class="nav-item" data-submenu="reports/pathology|pathology/pathologyreport|pathology/pathologybalancereport"><a class="nav-link" href="<?php echo base_url(); ?>admin/report/pathology"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line("pathology"); ?></a></li>
+                                  <li class="nav-item" data-submenu="reports/pathology|pathology/pathologyreport|pathology/pathologybalancereport"><a class="nav-link" href="<?php echo base_url(); ?>admin/report/pathology"><i class="fas fa-angle-right"></i> Clinical Laboratory</a></li>
                                 
                             <?php } } if ($this->module_lib->hasActive('radiology')) {
                             if ($this->rbac->hasPrivilege('radiology_patient_report', 'can_view')) {?>
@@ -867,7 +867,7 @@
                     if ($this->module_lib->hasActive('pathology')) {
                         if ($this->rbac->hasPrivilege('pathology_category', 'can_view') || $this->rbac->hasPrivilege('pathology_unit', 'can_view') || $this->rbac->hasPrivilege('pathology_parameter', 'can_view')) {
                             ?>
-                            <li class="nav-item" data-submenu="admin/pathologycategory"><a class="nav-link" href="<?php echo base_url(); ?>admin/pathologycategory/addcategory"><i class="fas fa-angle-right"></i> <?php echo $this->lang->line('pathology'); ?></a></li>
+                          <li class="nav-item" data-submenu="admin/pathologycategory"><a class="nav-link" href="<?php echo base_url(); ?>admin/pathologycategory/addcategory"><i class="fas fa-angle-right"></i> Clinical Laboratory</a></li>
                                                 <?php
                 }
                     }

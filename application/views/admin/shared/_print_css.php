@@ -164,23 +164,24 @@ body {
 .flex-fill { flex: 1 1 auto; }
 
 .sh-print-section-title {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 700;
-  color: #111;
-  border-bottom: 1px solid #a1a1aa;
-  padding-bottom: 4px;
-  margin: 14px 0 8px;
+  color: #ffffff;
+  background-color: #2563eb; /* Blue background */
+  border: 1px solid #94a3b8;
+  padding: 6px 8px;
+  margin: 14px 0 15px 0;
 }
 .sh-print-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 11px;
   margin-bottom: 4px;
+  border: 1px solid #94a3b8;
 }
 .sh-print-table thead th {
   background: #f1f5f9;
-  border-top: 1px solid #94a3b8;
-  border-bottom: 1px solid #94a3b8;
+  border: 1px solid #94a3b8;
   padding: 6px 8px;
   font-weight: 700;
   font-size: 9.5px;
@@ -189,11 +190,11 @@ body {
 }
 .sh-print-table tbody td {
   padding: 6px 8px;
-  border-bottom: 1px solid #cbd5e1;
+  border: 1px solid #cbd5e1;
   vertical-align: top;
   color: #111;
 }
-.sh-print-table tbody tr:last-child td { border-bottom: 1px solid #94a3b8; }
+.sh-print-table tbody tr:last-child td { border: 1px solid #cbd5e1; border-bottom: 1px solid #94a3b8; }
 .sh-print-table tbody td small {
   display: block;
   color: #94a3b8;

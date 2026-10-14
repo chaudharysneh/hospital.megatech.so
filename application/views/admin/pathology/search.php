@@ -219,10 +219,15 @@ $(document).on('click','.add-record',function(){
         var table = document.getElementById("tableID");
         var table_len = (table.rows.length);
         pathology_parmeter_rows++;
-        var div = "<td width='35%'><input type='hidden' name='total_rows[]' value='" + pathology_parmeter_rows + "'>  <input type='hidden' name='inserted_id_" + pathology_parmeter_rows + "' value='0'>  <select class='form-control form-control-sm select2 pathology_parmeter' name='parameter_name_"+ pathology_parmeter_rows +"' ><option value='<?php echo set_value('parameter_name'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($parametername as $dkey => $dvalue) {?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["parameter_name"] ?></option><?php }?></select></td><td width='30%'><input type='text' name='reference_range_"+ pathology_parmeter_rows +"' readonly id='reference_range" + pathology_parmeter_rows + "' class='form-control form-control-sm reference_range'></td><td width='30%'><input type='text' name='patho_unit_"+ pathology_parmeter_rows +"' readonly id='patho_unit" + pathology_parmeter_rows + "' class='form-control form-control-sm patho_unit'></td>";
+        var div = "<td width='30%'><input type='hidden' name='total_rows[]' value='" + pathology_parmeter_rows + "'>  <input type='hidden' name='inserted_id_" + pathology_parmeter_rows + "' value='0'>  <select class='form-control form-control-sm select2 pathology_parmeter' name='parameter_name_"+ pathology_parmeter_rows +"' ><option value='<?php echo set_value('parameter_name'); ?>'><?php echo $this->lang->line('select'); ?></option><?php foreach ($parametername as $dkey => $dvalue) {?><option value='<?php echo $dvalue["id"]; ?>'><?php echo $dvalue["parameter_name"] ?></option><?php }?></select></td><td width='25%'><input type='text' name='reference_range_"+ pathology_parmeter_rows +"' readonly id='reference_range" + pathology_parmeter_rows + "' class='form-control form-control-sm reference_range'></td><td width='20%'><input type='text' name='patho_unit_"+ pathology_parmeter_rows +"' readonly id='patho_unit" + pathology_parmeter_rows + "' class='form-control form-control-sm patho_unit'></td><td class='flag_column' style='display:none;' width='20%'><input type='text' name='flag_"+ pathology_parmeter_rows +"' id='flag_" + pathology_parmeter_rows + "' class='form-control form-control-sm flag_field'></td>";
 
         var row = table.insertRow(table_len).outerHTML = "<tr id='row" + pathology_parmeter_rows + "'>" + div + "<td class='text-center'><button type='button' class='btn btn-sm btn-light delete_row' data-bs-toggle='tooltip' title='<?php echo $this->lang->line('delete'); ?>'><i class='fa fa-times text-danger'></i></button></td></tr>";
         $('.select2').select2();
+        if($('#has_flag').is(':checked')) {
+            $('.flag_column').show();
+        } else {
+            $('.flag_column').hide();
+        }
     
 });
 

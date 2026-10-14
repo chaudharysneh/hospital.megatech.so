@@ -164,7 +164,7 @@ $genderList      = $this->customlib->getGender_Patient();
         <h5 class="modal-title" id="myModalLabel"><?php echo $this->lang->line('add_appointment'); ?></h5>
         <div class="d-flex align-items-center gap-2 ms-auto me-2">
           <div class="sh-header-select-wrap">
-            <select class="form-control form-control-sm patient_list_ajax" name="patient_id" id="addpatient_id"></select>
+            <select class="form-control form-control-sm patient_list_ajax" name="patient_id" id="addpatient_id" data-placeholder="<?php echo $this->lang->line('search_patient'); ?>"></select>
           </div>
           <?php if ($this->rbac->hasPrivilege('patient', 'can_add')) { ?>
           <a id="add" onclick="holdModal('myModalpa')" class="modalbtnpatient btn btn-sm btn-light text-nowrap"><i class="fa fa-plus"></i> <span><?php echo $this->lang->line('new_patient'); ?></span></a>
@@ -380,10 +380,32 @@ $genderList      = $this->customlib->getGender_Patient();
                   </select>
                 </div>
                 <?php } ?>
+                <div class="col-sm-3">
+                  <label class="form-label"><?php echo $this->lang->line('payment_mode'); ?></label>
+                  <select class="form-control form-control-sm payment_mode" name="edit_payment_mode">
+                    <?php foreach ($payment_mode as $key => $value) { ?>
+                    <option value="<?php echo $key ?>"><?php echo $value ?></option>
+                    <?php } ?>
+                  </select>
+                  <span class="text-danger"><?php echo form_error('apply_charge'); ?></span>
+                </div>
                 <div class="col-12">
                   <label class="form-label"><?php echo $this->lang->line('message'); ?></label>
                   <textarea name="message" id="message" class="form-control form-control-sm"><?php echo set_value('message'); ?></textarea>
                   <span class="text-danger"><?php echo form_error('message'); ?></span>
+                </div>
+                <div class="col-sm-4 cheque_div d-none">
+                  <label class="form-label"><?php echo $this->lang->line('cheque_no'); ?></label><small class="req"> *</small>
+                  <input type="text" name="cheque_no" id="edit_cheque_no" class="form-control form-control-sm">
+                </div>
+                <div class="col-sm-4 cheque_div d-none">
+                  <label class="form-label"><?php echo $this->lang->line('cheque_date'); ?></label><small class="req"> *</small>
+                  <input type="text" name="cheque_date" id="edit_cheque_date" class="form-control form-control-sm date">
+                </div>
+                <div class="col-sm-4 cheque_div d-none">
+                  <label class="form-label"><?php echo $this->lang->line('attach_document'); ?></label>
+                  <input type="file" class="filestyle form-control form-control-sm" name="document">
+                  <span class="text-danger"><?php echo form_error('document'); ?></span>
                 </div>
                 <div id="customfield" class="col-12"></div>
               </div>
@@ -574,7 +596,7 @@ $genderList      = $this->customlib->getGender_Patient();
 <script>
    $(document).on('change','.payment_mode',function(){
       var mode=$(this).val();
-      if(mode == "Cheque"){
+      if(mode == "Cheque" || mode == "ZAAD" || mode == "eDahab" || mode == "Premiere Wallet"){
         $('.filestyle','#addPaymentModal').dropify();
         $('.cheque_div').removeClass('d-none');
       }else{
@@ -682,10 +704,15 @@ $genderList      = $this->customlib->getGender_Patient();
     var sub_btn_clicked_name=sub_btn_clicked.attr('name');
     console.log(sub_btn_clicked_name);
       e.preventDefault();
+      var formData = new FormData(this);
+      // select2 AJAX dropdowns may not push their value into FormData;
+      // explicitly read the underlying <select> value and override.
+      var patientVal = $('#addpatient_id').val();
+      formData.set('patient_id', patientVal ? patientVal : '');
       $.ajax({
         url: baseurl+'admin/appointment/add',
         type: "POST",
-        data: new FormData(this),
+        data: formData,
         dataType: 'json',
         contentType: false,
         cache: false,
@@ -926,6 +953,10 @@ function get_PatientDetails(id) {
 			getDoctorShift("",data.doctor,data.shift_id);
 			$('select[id="rdoctor"] option[value="' + data.doctor + '"]').attr("selected", "selected");
 			$('select[id="edit_liveconsult"] option[value="' + data.live_consult + '"]').attr("selected", "selected");	
+			$('select[name="edit_payment_mode"] option[value="' + data.payment_mode_type + '"]').attr("selected", "selected");
+      $('select[name="edit_payment_mode"]').val(data.payment_mode_type).trigger('change');
+      $("#edit_cheque_no").val(data.cheque_no);
+      $("#edit_cheque_date").val(data.cheque_date);
 			console.log(data);
 			$("#rslot_edit").val(data.slot_id);
 			$("#rslot_edit_field").val(data.slot_id);          
@@ -1022,7 +1053,7 @@ function viewDetail(id) {
   $("#patient_age").text(data.patient_age);
   $("#collected_by").text(data.received_by);
 
-  if(data.payment_mode=="Cheque"){
+  if(data.payment_mode=="Cheque" || data.payment_mode=="ZAAD" || data.payment_mode=="eDahab" || data.payment_mode=="Premiere Wallet"){
     $("#payrow").removeClass('d-none');
     $("#paydocrow").removeClass('d-none');
     $("#spn_chequeno").text(data.cheque_no);

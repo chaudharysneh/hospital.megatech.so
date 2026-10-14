@@ -101,7 +101,20 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                 </div>
             </div>
             <div class="col-sm-12">
-                <?php echo display_custom_fields('pathologytest'); ?>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <?php echo display_custom_fields('pathologytest'); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label class="form-label small">Flag</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="has_flag" id="has_flag" value="1" onclick="$('.flag_column').toggle(this.checked)">
+                                <label class="form-check-label" for="has_flag">Enable Flag</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -119,6 +132,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <th><?php echo $this->lang->line('test_parameter_name'); ?> <small class="req">*</small></th>
                         <th><?php echo $this->lang->line('reference_range'); ?> <small class="req">*</small></th>
                         <th><?php echo $this->lang->line('unit'); ?> <small class="req">*</small></th>
+                        <th class="flag_column" style="display:none;">Flag</th>
                         <th width="5%"></th>
                     </tr>
                 </thead>
@@ -126,7 +140,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                     <tr id="row0">
                         <input type="hidden" name="total_rows[]" value="1">
                         <input type="hidden" name="inserted_id_1" value="0">
-                        <td width="35%">
+                        <td width="30%">
                             <select class="form-control form-control-sm select2 pathology_parmeter w-100" id="parameter_name_1" name="parameter_name_1">
                                 <option value="<?php echo set_value('pathology_parameter_id'); ?>"><?php echo $this->lang->line('select'); ?></option>
                                 <?php foreach ($parametername as $dkey => $dvalue) { ?>
@@ -134,11 +148,14 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                 <?php } ?>
                             </select>
                         </td>
-                        <td width="30%">
+                        <td width="25%">
                             <input type="text" readonly name="reference_range_1" id="reference_range_1" class="form-control form-control-sm reference_range">
                         </td>
-                        <td width="30%">
+                        <td width="20%">
                             <input type="text" readonly name="patho_unit_1" id="patho_unit_1" class="form-control form-control-sm patho_unit">
+                        </td>
+                        <td class="flag_column" style="display:none;" width="20%">
+                            <input type="text" name="flag_1" id="flag_1" class="form-control form-control-sm flag_field">
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-sm btn-light delete_row" data-bs-toggle="tooltip" title="<?php echo $this->lang->line('delete'); ?>"><i class="fa fa-times text-danger"></i></button>

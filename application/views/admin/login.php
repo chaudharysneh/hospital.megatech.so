@@ -38,19 +38,20 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
       </div>
       <div class="lp-logo-name"><?php echo html_escape($title_name); ?></div>
     </div>
-
-      <div class="lp-admin-portal">
+    
+    <div class="lp-admin-portal">
         <div class="lp-badge"><span class="dot"></span><?php echo $this->lang->line('admin_portal') ?: 'Admin Portal'; ?></div>
-      </div>
+     </div>
     </div>
-
+    
     <?php if (!empty($logoresult['login_banner'])): ?>
     <div class="lp-login-banner">
       <img loading="eager" fetchpriority="high" decoding="async" src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_banner'])); ?>" alt="<?php echo html_escape($title_name); ?> banner">
     </div>
     <?php else: ?>
-    <div class="lp-pitch">
 
+    <div class="lp-pitch">
+      
       <?php if (!empty($notice)): ?>
         <div class="lp-news">
           <div class="lp-news-label"><?php echo $this->lang->line('what_is_new_in'); ?> <?php echo html_escape($sch_name); ?></div>
@@ -82,7 +83,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
         </div>
       <?php endif; ?>
     </div>
-
+    
     <?php endif; ?>
 
     <div class="lp-tiny">© <?php echo date('Y'); ?> <?php echo html_escape($title_name); ?> · <?php echo $this->lang->line('all_rights_reserved') ?: 'All rights reserved'; ?></div>
@@ -91,7 +92,7 @@ $mini_logo   = !empty($logoresult["mini_logo"]) ? "uploads/hospital_content/logo
   <!-- RIGHT: Login form -->
   <div class="lp-form-panel">
     <div class="lp-card">
-      <?php if (!empty($logoresult['login_logo'])): ?>
+        <?php if (!empty($logoresult['login_logo'])): ?>
       <div class="lp-login-logo">
         <img loading="eager" decoding="async" src="<?php echo html_escape($this->media_storage->getImageURL('uploads/hospital_content/logo/' . $logoresult['login_logo'])); ?>" alt="<?php echo html_escape($title_name); ?> logo">
       </div>

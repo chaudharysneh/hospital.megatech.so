@@ -25,7 +25,10 @@ $genderList = $this->customlib->getGender();
                                     <th class="text-end"><?php echo $this->lang->line('total')." (".$currency_symbol.")"; ?></th>
                                     <th class="text-end"><?php echo $this->lang->line('discount')." (".$currency_symbol.")"; ?></th>
                                     <th class="text-end"><?php echo $this->lang->line('tax')." (".$currency_symbol.")"; ?></th>
-                                    <th class="noExport text-end"><?php echo $this->lang->line('net_amount')." (".$currency_symbol.")"; ?></th>                                  
+                                    <th class="text-end"><?php echo $this->lang->line('net_amount')." (".$currency_symbol.")"; ?></th>
+                                    <th class="text-end"><?php echo $this->lang->line('paid_amount')." (".$currency_symbol.")"; ?></th>
+                                    <th class="text-end"><?php echo $this->lang->line('returned_amount')." (".$currency_symbol.")"; ?></th>
+                                    <th class="noExport text-end"><?php echo $this->lang->line('balance_amount')." (".$currency_symbol.")"; ?></th>                                  
                                 </tr>
                             </thead>
                             <tbody>
@@ -211,7 +214,7 @@ $genderList = $this->customlib->getGender();
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label"><?php echo $this->lang->line('payment_amount'); ?> (<?php echo $currency_symbol; ?>)</label>
-                                            <input type="text" id="payment_amount" class="form-control payment_amount text-end" readonly>
+                                            <input type="text" name="payment_amount" id="payment_amount" class="form-control payment_amount text-end">
                                         </div>
                                         <div class="col-md-12">
                                             <label class="form-label"><?php echo $this->lang->line('payment_note'); ?></label>

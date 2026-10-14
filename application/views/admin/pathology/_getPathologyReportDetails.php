@@ -106,7 +106,8 @@ $collected_by_name = composeStaffNameByString(
             <tr>
                 <th>#</th>
                 <th><?php echo $this->lang->line('test_parameter_name'); ?><small class="req"> *</small></th>
-                <th><?php echo $this->lang->line('report_value'); ?></th>
+                <th>Result Value</th>
+                <th>flag</th>
                 <th class="text-end"><?php echo $this->lang->line('reference_range'); ?></th>
             </tr>
         </thead>
@@ -131,6 +132,9 @@ $collected_by_name = composeStaffNameByString(
                         <input type="text" class="form-control" name="pathology_parameter_<?php echo $parameter_value->id; ?>" value="<?php echo html_escape($parameter_value->pathology_report_value); ?>">
                         <span class="input-group-text" name="pathology_parameterdetails_<?php echo $parameter_value->id; ?>"><?php echo html_escape($parameter_value->unit_name); ?></span>
                     </div>
+                </td>
+                <td>
+                    <input type="text" class="form-control form-control-sm" name="pathology_flag_<?php echo $parameter_value->id; ?>" value="<?php echo html_escape(isset($parameter_value->flag) ? $parameter_value->flag : ''); ?>">
                 </td>
                 <td class="text-end"><?php echo html_escape($parameter_value->reference_range.' '.$parameter_value->unit_name); ?></td>
             </tr>

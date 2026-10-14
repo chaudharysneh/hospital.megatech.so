@@ -103,7 +103,20 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                 </div>
             </div>
             <div class="col-sm-12">
-                <?php echo display_custom_fields('pathologytest', $result->id); ?>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <?php echo display_custom_fields('pathologytest', $result->id); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label class="form-label small">Flag</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="has_flag" id="has_flag_edit" value="1" onclick="$('.flag_column').toggle(this.checked)">
+                                <label class="form-check-label" for="has_flag_edit">Enable Flag</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -121,6 +134,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <th><?php echo $this->lang->line('test_parameter_name'); ?> <small class="req">*</small></th>
                         <th><?php echo $this->lang->line('reference_range'); ?> <small class="req">*</small></th>
                         <th><?php echo $this->lang->line('unit'); ?> <small class="req">*</small></th>
+                        <th class="flag_column" style="display:none;">Flag</th>
                         <th width="5%"></th>
                     </tr>
                 </thead>
@@ -132,7 +146,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                     ?>
                     <input type="hidden" name="prev_inserted[]" value="<?php echo $patho_param_value->id; ?>">
                     <tr id="row<?php echo $row_count; ?>">
-                        <td width="35%">
+                        <td width="30%">
                             <input type="hidden" name="total_rows[]" value="<?php echo $row_count; ?>">
                             <input type="hidden" name="inserted_id_<?php echo $row_count; ?>" value="<?php echo $patho_param_value->id; ?>">
                             <input type="hidden" class="post_parameter_id" name="post_parameter_id" value="<?php echo $patho_param_value->pathology_parameter_id; ?>">
@@ -143,11 +157,14 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                 <?php } ?>
                             </select>
                         </td>
-                        <td width="30%">
+                        <td width="25%">
                             <input type="text" readonly name="reference_range_<?php echo $row_count; ?>" id="reference_range_<?php echo $row_count; ?>" class="form-control form-control-sm reference_range">
                         </td>
-                        <td width="30%">
+                        <td width="20%">
                             <input type="text" readonly name="patho_unit_<?php echo $row_count; ?>" id="patho_unit_<?php echo $row_count; ?>" class="form-control form-control-sm patho_unit">
+                        </td>
+                        <td class="flag_column" style="display:none;" width="20%">
+                            <input type="text" name="flag_<?php echo $row_count; ?>" id="flag_<?php echo $row_count; ?>" class="form-control form-control-sm flag_field">
                         </td>
                         <td class="text-center">
                             <?php if ($this->rbac->hasPrivilege('pathology_parameter', 'can_delete')) { ?>

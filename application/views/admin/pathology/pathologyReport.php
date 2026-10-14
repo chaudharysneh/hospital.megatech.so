@@ -78,7 +78,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                         <option value="<?php echo set_value('test_name_id'); ?>"><?php echo $this->lang->line('select'); ?>
                                         </option>
                                         <?php foreach ($testlist as $dkey => $dvalue) { ?>
-                                            <option value="<?php echo $dvalue["id"]; ?>"><?php echo $dvalue["test_name"]." (".$dvalue["short_name"].")"; ?>
+                                            <option value="<?php echo $dvalue["id"]; ?>"><?php echo "(" . $dvalue["short_name"] . ") " . $dvalue["test_name"]; ?>
                                             </option>
                                     <?php }?>
                                 </select>

@@ -104,7 +104,7 @@ $genderList = $this->customlib->getGender();
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <div class="row">
                                     <?php foreach (array('logo' => 'Login Form Logo', 'banner' => 'Login Form Banner') as $kind => $label): ?>
                                     <div class="col-md-6">
@@ -471,13 +471,14 @@ $genderList = $this->customlib->getGender();
 
 <script type="text/javascript">
     var base_url = '<?php echo base_url(); ?>';
+    
     $('.upload_login_image').on('click', function (e) {
         e.preventDefault();
         $('#myModalLabel').text($(this).data('label') + ' (JPG, PNG or WebP, up to 5 MB)');
         $('#ajaxlogo').attr('action', '<?php echo site_url('schsettings/ajax_loginimage'); ?>/' + $(this).data('kind'));
         bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-uploadfile'), {backdrop: 'static', keyboard: false}).show();
     });
-
+    
     $('.upload_logo').on('click', function (e) {
         e.preventDefault();
         $("#myModalLabel").html('<?php echo $this->lang->line('edit_logo') ?> (182px X 18px)');

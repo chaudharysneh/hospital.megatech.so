@@ -358,7 +358,7 @@ class Report extends Admin_Controller
         $this->load->view('admin/report/balanceamountreport', $data);
         $this->load->view('layout/footer', $data);
     }
-
+    
     public function incomestatementreport()
     {
         if (!$this->rbac->hasPrivilege('income_expense_balance_report', 'can_view')) {

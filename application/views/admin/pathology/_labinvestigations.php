@@ -59,7 +59,7 @@
                 <tr class="line">
                     <th>#</th>
                     <th class="text-start"><?php echo $this->lang->line('test_parameter_name'); ?></th>
-                    <th class="text-center"><?php echo $this->lang->line('report_value'); ?></th>                  
+                    <th class="text-center">Result Value</th>                  
                     <th class="text-end"><?php echo $this->lang->line('reference_range'); ?></th>
                 </tr>
             </thead>

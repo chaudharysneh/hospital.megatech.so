@@ -200,11 +200,11 @@ class Report_model extends CI_Model
             $search .= " and date_format(payment.date,'%Y-%m-%d ') ='" . $date . "' ";
         }
 
-        $sql = "SELECT `payment`.`billing_id`, `payment`.`id`, `person`.`name`, `patients`.`patient_name`, `patients`.`id` as `patient_id`, `type`.`name` as `type`, `payment`.`bill_amount`, `payment`.`percentage`, `payment`.`amount`, `payment`.`payment_mode`, `prefixes`.`prefix`, payment.date FROM `referral_payment` `payment` LEFT JOIN `referral_type` `type` ON `type`.`id`=`payment`.`referral_type` INNER JOIN `prefixes` ON `type`.`prefixes_type`=`prefixes`.`type` JOIN `referral_person` `person` ON `person`.`id`=`payment`.`referral_person_id` LEFT JOIN `patients` ON `patients`.`id`=`payment`.`patient_id` where 0=0 " . $search;
+        $sql = "SELECT `payment`.`billing_id`, `payment`.`id`, `person`.`name`, `patients`.`patient_name`, `patients`.`id` as `patient_id`, `type`.`name` as `type`, `payment`.`bill_amount`, `payment`.`percentage`, `payment`.`amount`, `prefixes`.`prefix`, payment.date FROM `referral_payment` `payment` LEFT JOIN `referral_type` `type` ON `type`.`id`=`payment`.`referral_type` INNER JOIN `prefixes` ON `type`.`prefixes_type`=`prefixes`.`type` JOIN `referral_person` `person` ON `person`.`id`=`payment`.`referral_person_id` LEFT JOIN `patients` ON `patients`.`id`=`payment`.`patient_id` where 0=0 " . $search;
         $this->datatables->query($sql)
 
-            ->searchable('person.name,patient_name,date,billing_id,percentage,bill_amount,payment.payment_mode,amount')
-            ->orderable('person.name,patient_name,date,billing_id,percentage,bill_amount,payment.payment_mode,amount')
+            ->searchable('person.name,patient_name,date,billing_id,percentage,bill_amount,amount')
+            ->orderable('person.name,patient_name,date,billing_id,percentage,bill_amount,amount')
             ->query_where_enable(TRUE);
         return $this->datatables->generate('json');
     }
@@ -490,9 +490,9 @@ class Report_model extends CI_Model
         $field_variable = (empty($field_var_array)) ? "" : "," . implode(',', $field_var_array);
         $custom_field_column = (empty($custom_field_column_array)) ? "" : "," . implode(',', $custom_field_column_array);
         $this->datatables
-            ->select('income.id,income.name,income.invoice_no,income.date,income.amount, income_head.income_category,income.amount,income.payment_mode,income_head.id as head_id' . $field_variable)
-            ->searchable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column . ',income.payment_mode,income.amount')
-            ->orderable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column . ',income.payment_mode,income.amount')
+            ->select('income.id,income.name,income.invoice_no,income.date,income.amount, income_head.income_category,income.amount,income_head.id as head_id' . $field_variable)
+            ->searchable('income_head.income_category,income.id,income.name,income.date,income.invoice_no,income.amount' . $custom_field_column)
+            ->orderable('income_head.income_category,income.id,income.name,income.date,income.invoice_no' . $custom_field_column)
             ->join('income_head', 'income.inc_head_id = income_head.id')
             ->where('income.date >=', $start_date)
             ->where('income.date <=', $end_date)
@@ -516,7 +516,7 @@ class Report_model extends CI_Model
         return $result->result_array();
     }
 	
-    public function getmodulewisebalance_report($module_type=null,$patient_id=null,$due_summary=false)
+    public function getmodulewisebalance_report($module_type=null,$patient_id=null)
     {
         $condition="";
         if($module_type!=null && $module_type!='all'){
@@ -735,13 +735,6 @@ class Report_model extends CI_Model
         left join staff on staff.id=ipd_details.generated_by   
         ) as tt where 0=0 $condition";    
        
-        if ($due_summary) {
-            // Match the report's balance column; count only bills with money due.
-            return $this->db->query("SELECT COALESCE(SUM(COALESCE(net_amount, 0) - COALESCE(paid_amount, 0)), 0) AS total_due,
-                COUNT(*) AS unpaid_count FROM (" . $query . ") AS balances
-                WHERE COALESCE(net_amount, 0) - COALESCE(paid_amount, 0) > 0")->row_array();
-        }
-
         $res = $this->db->query($query);
         return $res->result_array();
     }
@@ -754,7 +747,9 @@ class Report_model extends CI_Model
         }
         $sql = "SELECT supplier_bill_basic.id, supplier_bill_basic.invoice_no, supplier_bill_basic.date,
                        supplier_bill_basic.total, supplier_bill_basic.discount, supplier_bill_basic.tax,
-                       supplier_bill_basic.net_amount, supplier_bill_basic.payment_mode,
+                       supplier_bill_basic.net_amount, supplier_bill_basic.paid_amount,
+                       IFNULL((SELECT SUM(total_amount) FROM purchase_return_basic WHERE purchase_return_basic.supplier_bill_basic_id = supplier_bill_basic.id), 0) as returned_amount,
+                       supplier_bill_basic.payment_mode,
                        medicine_supplier.supplier
                 FROM supplier_bill_basic
                 INNER JOIN medicine_supplier ON medicine_supplier.id = supplier_bill_basic.supplier_id
@@ -764,7 +759,7 @@ class Report_model extends CI_Model
 
         $this->datatables->query($sql)
             ->searchable('supplier_bill_basic.invoice_no, medicine_supplier.supplier, supplier_bill_basic.payment_mode')
-            ->orderable("supplier_bill_basic.date, supplier_bill_basic.invoice_no, medicine_supplier.supplier, supplier_bill_basic.total, supplier_bill_basic.net_amount,'','',''")
+            ->orderable("supplier_bill_basic.date, supplier_bill_basic.invoice_no, medicine_supplier.supplier, supplier_bill_basic.total, supplier_bill_basic.net_amount,supplier_bill_basic.paid_amount,returned_amount,'',''")
             ->sort('supplier_bill_basic.date', 'desc')
             ->query_where_enable(TRUE);
         return $this->datatables->generate('json');
@@ -801,14 +796,13 @@ class Report_model extends CI_Model
         return $this->datatables->generate('json');
     }
 
-    public function getIncomeExpenseBalanceReport($start_date = null, $end_date = null, $group_by = null)
+    public function getIncomeExpenseBalanceReport($start_date = null, $end_date = null)
     {
         $dt_cond = "";
         $in_cond = "";
         $ex_cond = "";
         $rp_cond = "";
         $ps_cond = "";
-        $purchase_cond = "";
 
         if ($start_date != null && $end_date != null) {
             $s = $this->db->escape_str($start_date);
@@ -817,19 +811,10 @@ class Report_model extends CI_Model
             $in_cond = " AND i.date >= '$s' AND i.date <= '$e'";
             $ex_cond = " AND e.date >= '$s' AND e.date <= '$e'";
             $rp_cond = " AND DATE(rp.date) >= '$s' AND DATE(rp.date) <= '$e'";
-            $purchase_cond = " AND DATE(purchase.payment_date) >= '$s' AND DATE(purchase.payment_date) <= '$e'";
             $ps_cond = " AND DATE(ss.payment_date) >= '$s' AND DATE(ss.payment_date) <= '$e'";
         }
 
-        // Only fixed expressions are used; the daily report remains the default.
-        $period_expression = 'record_date';
-        if ($group_by === 'monthly') {
-            $period_expression = "DATE_FORMAT(record_date, '%Y-%m-01')";
-        } elseif ($group_by === 'yearly') {
-            $period_expression = "DATE_FORMAT(record_date, '%Y-01-01')";
-        }
-
-        $sql = "SELECT {$period_expression} AS record_date, inc_exp_head, SUM(income_in) AS income_in, SUM(expense_out) AS expense_out
+        $sql = "SELECT record_date, inc_exp_head, SUM(income_in) AS income_in, SUM(expense_out) AS expense_out
         FROM (
             SELECT
                 DATE(t.payment_date) AS record_date,
@@ -878,22 +863,8 @@ class Report_model extends CI_Model
                 ss.net_salary AS expense_out
             FROM staff_payslip ss
             WHERE ss.status = 'paid' {$ps_cond}
-
-            UNION ALL
-
-            SELECT
-                DATE(purchase.payment_date) AS record_date,
-                'Medicine Purchase' AS inc_exp_head,
-                0 AS income_in,
-                purchase.net_amount AS expense_out
-            FROM supplier_bill_basic purchase
-            WHERE purchase.net_amount > 0
-              AND purchase.payment_date IS NOT NULL
-              AND purchase.payment_date > '1000-01-01'
-              AND purchase.payment_mode IN ('Cash', 'Cheque', 'transfer_to_bank_account', 'UPI', 'Online', 'Other')
-              {$purchase_cond}
         ) AS combined
-        GROUP BY {$period_expression}, inc_exp_head
+        GROUP BY record_date, inc_exp_head
         ORDER BY record_date ASC, inc_exp_head ASC";
 
         $result = $this->db->query($sql);

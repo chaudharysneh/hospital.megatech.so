@@ -73,6 +73,9 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                         <th class="text-end"><?php echo $this->lang->line('discount'); ?> (<?php echo $currency_symbol; ?>)</th>
                                         <th class="text-end"><?php echo $this->lang->line('tax'); ?> (<?php echo $currency_symbol; ?>)</th>
                                         <th class="text-end"><?php echo $this->lang->line('net_amount'); ?> (<?php echo $currency_symbol; ?>)</th>
+                                        <th class="text-end"><?php echo $this->lang->line('paid_amount'); ?> (<?php echo $currency_symbol; ?>)</th>
+                                        <th class="text-end"><?php echo $this->lang->line('returned_amount'); ?> (<?php echo $currency_symbol; ?>)</th>
+                                        <th class="text-end"><?php echo $this->lang->line('balance_amount'); ?> (<?php echo $currency_symbol; ?>)</th>
                                         <th><?php echo $this->lang->line('payment_mode'); ?></th>
                                     </tr>
                                 </thead>

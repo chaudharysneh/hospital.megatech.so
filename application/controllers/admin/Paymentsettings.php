@@ -30,6 +30,137 @@ class Paymentsettings extends Admin_Controller
         $this->load->view('layout/footer', $data);
     }
 
+    public function payment_mode()
+    {
+        if (!$this->rbac->hasPrivilege('payment_mode', 'can_view')) {
+            access_denied();
+        }
+        $this->session->set_userdata('top_menu', 'setup');
+        $this->session->set_userdata('sub_menu', 'schsettings/index');
+        $this->session->set_userdata('inner_menu', 'admin/paymentsettings/payment_mode');
+        $data['title']  = 'Payment Mode';
+        $data['module'] = 'setup';
+        $this->load->view('layout/header', $data);
+        $this->load->view('admin/payment_setting/payment_mode', $data);
+        $this->load->view('layout/footer', $data);
+    }
+
+    public function update_payment_modes()
+    {
+        if (!$this->rbac->hasPrivilege('payment_mode', 'can_edit')) {
+            access_denied();
+        }
+        $payment_modes = $this->input->post('payment_modes'); // array of active keys
+        
+        $json_path = APPPATH . 'config/payment_modes.json';
+        $existing_data = [];
+        if (file_exists($json_path)) {
+            $existing_data = json_decode(file_get_contents($json_path), true);
+            if (!is_array($existing_data)) $existing_data = [];
+        }
+        
+        $all_modes = $this->config->item('all_payment_modes');
+        $save_data = [];
+        
+        // Ensure any custom mode that was unchecked is still kept in the save_data as disabled
+        foreach ($existing_data as $k => $v) {
+            if (!isset($all_modes[$k])) {
+                $all_modes[$k] = $k;
+            }
+        }
+
+        foreach ($all_modes as $key => $val) {
+            if (is_array($payment_modes) && in_array($key, $payment_modes)) {
+                $save_data[$key] = 1;
+            } else {
+                $save_data[$key] = 0;
+            }
+        }
+        
+        $new_mode = trim($this->input->post('new_payment_mode'));
+        if (!empty($new_mode)) {
+            $save_data[$new_mode] = 1; // Add and enable the new mode
+        }
+        
+        file_put_contents($json_path, json_encode($save_data));
+        
+        echo json_encode(array('st' => 0, 'msg' => $this->lang->line('update_message')));
+    }
+
+    public function toggle_payment_mode()
+    {
+        if (!$this->rbac->hasPrivilege('payment_mode', 'can_edit')) {
+            echo json_encode(array('st' => 1, 'msg' => 'Access denied.'));
+            return;
+        }
+        $key     = trim($this->input->post('mode_key'));
+        $enabled = (int) $this->input->post('enabled'); // 1 or 0
+
+        if (empty($key)) {
+            echo json_encode(array('st' => 1, 'msg' => 'Invalid mode key.'));
+            return;
+        }
+
+        $json_path = APPPATH . 'config/payment_modes.json';
+        $data = [];
+        if (file_exists($json_path)) {
+            $data = json_decode(file_get_contents($json_path), true);
+            if (!is_array($data)) $data = [];
+        }
+
+        // Build full list from all_payment_modes + existing custom ones
+        $all_modes = $this->config->item('all_payment_modes');
+        if (!is_array($all_modes)) $all_modes = [];
+
+        // Ensure all existing modes are in save data
+        foreach ($all_modes as $k => $v) {
+            if (!isset($data[$k])) $data[$k] = 1; // default enabled
+        }
+        foreach ($data as $k => $v) {
+            if (!isset($all_modes[$k])) $all_modes[$k] = $k;
+        }
+
+        $data[$key] = $enabled;
+
+        file_put_contents($json_path, json_encode($data));
+
+        $msg = $enabled ? 'Payment mode enabled successfully.' : 'Payment mode disabled successfully.';
+        echo json_encode(array('st' => 0, 'msg' => $msg));
+    }
+
+    public function add_payment_mode()
+    {
+        if (!$this->rbac->hasPrivilege('payment_mode', 'can_edit')) {
+            echo json_encode(array('st' => 1, 'msg' => 'Access denied.'));
+            return;
+        }
+        $new_mode = trim($this->input->post('new_payment_mode'));
+        if (empty($new_mode)) {
+            echo json_encode(array('st' => 1, 'msg' => 'Mode name cannot be empty.'));
+            return;
+        }
+
+        $json_path = APPPATH . 'config/payment_modes.json';
+        $data = [];
+        if (file_exists($json_path)) {
+            $data = json_decode(file_get_contents($json_path), true);
+            if (!is_array($data)) $data = [];
+        }
+
+        // Also seed existing modes that were never saved yet
+        $all_modes = $this->config->item('all_payment_modes');
+        if (is_array($all_modes)) {
+            foreach ($all_modes as $k => $v) {
+                if (!isset($data[$k])) $data[$k] = 1;
+            }
+        }
+
+        $data[$new_mode] = 1; // Add and enable
+        file_put_contents($json_path, json_encode($data));
+
+        echo json_encode(array('st' => 0, 'msg' => 'Payment mode "' . $new_mode . '" added successfully.'));
+    }
+
     public function paypal()
     {
         $this->form_validation->set_error_delimiters('', '');

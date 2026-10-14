@@ -58,7 +58,7 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                 <!-- ③ Loop over tests -->
                 <?php if (!empty($result)) { foreach ($result as $row) { ?>
 
-                <div class="sh-print-section-title"><?php echo html_escape($row['test_name']) . ' (' . html_escape($row['short_name']) . ')'; ?></div>
+                <div class="sh-print-section-title"><?php echo '(' . html_escape($row['short_name']) . ') ' . html_escape($row['test_name']); ?></div>
 
                 <?php if (!empty($result[$row['id']]['pathology_parameter'])) { ?>
                 <table class="sh-print-table">
@@ -66,8 +66,9 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                         <tr>
                             <th style="width:4%">#</th>
                             <th><?php echo $this->lang->line('test_parameter_name'); ?></th>
+                            <th style="width:20%">Result Value</th>
+                            <th style="width:10%"><?php echo "Flag"; ?></th>
                             <th style="width:25%"><?php echo $this->lang->line('reference_range'); ?></th>
-                            <th style="width:20%"><?php echo $this->lang->line('report_value'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,11 +85,37 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                                 <div class="sh-caption-xs"><?php echo $this->lang->line('description') . ': ' . $parameter_value->description; ?></div>
                                 <?php } ?>
                             </td>
-                            <td><?php echo $parameter_value->reference_range . ' ' . $parameter_value->unit_name; ?></td>
                             <td><?php echo ($level_exceeded)
                                 ? "<span style='color:#dc2626;'>" . $parameter_value->pathology_report_value . ' ' . $parameter_value->unit_name . "</span>"
                                 : (($parameter_value->pathology_report_value == '') ? '' : $parameter_value->pathology_report_value . ' ' . $parameter_value->unit_name);
                             ?></td>
+                            <td>
+                                <?php
+                                $flag = '';
+                                if ($level_exceeded) {
+                                    $patient_range = $parameter_value->pathology_report_value;
+                                    $range_from = $parameter_value->range_from;
+                                    $range_to = $parameter_value->range_to;
+                                    if($range_from == "") {
+                                        $range = explode('-', $parameter_value->reference_range);
+                                        $range_from = trim($range[0] ?? '');
+                                        $range_to = trim($range[1] ?? '');
+                                    }
+                                    $range_to = ($range_to == "") ? $range_from : $range_to;
+                                    if (is_numeric($patient_range) && is_numeric($range_from) && is_numeric($range_to)) {
+                                        if ($patient_range < $range_from) {
+                                            $flag = 'Low';
+                                        } elseif ($patient_range > $range_to) {
+                                            $flag = 'High';
+                                        }
+                                    } else {
+                                        $flag = 'Abnormal';
+                                    }
+                                    echo "<span style='color:#dc2626; font-weight:bold;'>" . $flag . "</span>";
+                                }
+                                ?>
+                            </td>
+                            <td><?php echo $parameter_value->reference_range . ' ' . $parameter_value->unit_name; ?></td>
                         </tr>
                         <?php $row_counter++; } ?>
                         <?php if (!empty($parameter_value->pathology_result)) { ?>

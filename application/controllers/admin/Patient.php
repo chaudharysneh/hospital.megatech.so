@@ -1022,7 +1022,6 @@ This Function is used to Add Patient
     {
         $custom_fields = $this->customfield_model->getByBelong('patient');
 
-
         foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
             if ($custom_fields_value['validation']) {
                 $custom_fields_id   = $custom_fields_value['id'];

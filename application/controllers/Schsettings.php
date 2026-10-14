@@ -109,7 +109,7 @@ class Schsettings extends Admin_Controller
             echo json_encode($array);
         }
     }
-
+    
     public function ajax_loginimage($kind = '')
     {
         if (!$this->rbac->hasPrivilege('general_setting', 'can_edit')) {
@@ -156,7 +156,7 @@ class Schsettings extends Admin_Controller
         }
         echo json_encode(array('success' => true, 'error' => '', 'message' => $this->lang->line('update_message')));
     }
-
+    
     /** Resize uploaded branding once, rather than processing it on every login. */
     private function optimize_login_image($filename, $kind)
     {

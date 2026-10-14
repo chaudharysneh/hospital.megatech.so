@@ -74,6 +74,7 @@ class Admin_Controller extends MY_Controller
     {
         parent::__construct();
         $this->load->library('rbac');
+        $this->load->config('payroll'); // Load payroll config for all admin controllers
         $this->auth->is_logged_in();
         $this->check_license();       
     }

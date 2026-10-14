@@ -30,7 +30,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             <select class="form-control form-control-sm test_name select2" name="test_name_1" id="1">
                                 <option value="<?php echo set_value('test_name_id'); ?>"><?php echo $this->lang->line('select'); ?></option>
                                 <?php foreach ($testlist as $dkey => $dvalue) { ?>
-                                    <option value="<?php echo $dvalue["id"]; ?>"><?php echo $dvalue["test_name"] . " (" . $dvalue["short_name"] . ")"; ?></option>
+                                     <option value="<?php echo $dvalue["id"]; ?>"><?php echo "(" . $dvalue["short_name"] . ") " . $dvalue["test_name"]; ?></option>
                                 <?php } ?>
                             </select>
                             <span class="text-danger"><?php echo form_error('test_name_id[]'); ?></span>

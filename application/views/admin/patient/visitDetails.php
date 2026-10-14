@@ -457,7 +457,7 @@ $case_reference_id=$result['case_reference_id'];
                                                   <td><?php echo $this->customlib->getSessionPrefixByType('transaction_id').$rl_pay['id']; ?></td>
                                                   <td><?php echo $this->customlib->YYYYMMDDHisTodateFormat($rl_pay['payment_date'],$this->customlib->getHospitalTimeFormat()); ?></td>
                                                   <td><?php echo html_escape($rl_pay['note']); ?></td>
-                                                  <td><?php echo $this->lang->line(strtolower($rl_pay['payment_mode']));
+                                                  <td><?php echo ($this->lang->line(strtolower($rl_pay['payment_mode']))) ? $this->lang->line(strtolower($rl_pay['payment_mode'])) : $rl_pay['payment_mode'];
                                                     if ($rl_pay['payment_mode']=='Cheque') {
                                                       if ($rl_pay['cheque_no']!='') echo '<br/>'.$this->lang->line('cheque_no').': '.$rl_pay['cheque_no'];
                                                       if ($rl_pay['cheque_date']!=''&&$rl_pay['cheque_date']!='0000-00-00') echo '<br/>'.$this->lang->line('cheque_date').': '.$this->customlib->YYYYMMDDTodateFormat($rl_pay['cheque_date']);
@@ -955,7 +955,7 @@ $case_reference_id=$result['case_reference_id'];
                                             if (!empty($payment_details)) {
                                                 $total_payment = 0;
                                                 foreach ($payment_details as $payment) {
-                                                    if (!empty($payment['amount'])) {
+                                                    if (!empty($payment['amount']) && $payment['payment_mode'] != 'Pending') {
                                                         $total_payment += $payment['amount'];
                                                     }
                                                     ?> 
@@ -963,7 +963,7 @@ $case_reference_id=$result['case_reference_id'];
                                                         <td><?php echo $this->customlib->getSessionPrefixByType('transaction_id').$payment['id']; ?></td>
                                                         <td><?php echo $this->customlib->YYYYMMDDHisTodateFormat($payment['payment_date'],$this->customlib->getHospitalTimeFormat()); ?></td>
                                                         <td><?php echo html_escape($payment["note"]) ?></td>
-                                                        <td ><?php echo $this->lang->line(strtolower($payment["payment_mode"] ?? ''))."<br>";
+                                                        <td ><?php echo ($this->lang->line(strtolower($payment["payment_mode"] ?? ''))) ? $this->lang->line(strtolower($payment["payment_mode"] ?? '')) : ($payment["payment_mode"] ?? ''); echo "<br>";
 
                                                         if($payment['payment_mode'] == "Cheque"){
                                                              if($payment['cheque_no']!=''){
@@ -3219,7 +3219,7 @@ $case_reference_id=$result['case_reference_id'];
                 <input type="hidden" name="opd_id" id="payment_opd_id" value="<?php echo $result['id']; ?>">
                 <input type="hidden" name="case_reference_id" value="<?php echo $result['case_reference_id']; ?>">
                 <input type="hidden" name="patient_id" value="<?php echo $id; ?>">
-                <input type="hidden" name="net_amount" value="<?php echo $total - $total_payment; ?>">
+                <input type="hidden" name="net_amount" value="<?php echo max(0, $total - $total_payment); ?>">
                 <div class="pup-scroll-area">
                     <div class="modal-body modal-background">
                         <div class="sh-form-card">
@@ -3234,7 +3234,7 @@ $case_reference_id=$result['case_reference_id'];
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label"><?php echo $this->lang->line('amount') . " (" . $currency_symbol . ")"; ?></label><small class="req"> *</small>
-                                        <input type="text" name="amount" id="amount" class="form-control form-control-sm" value="<?php echo number_format((float)($total - $total_payment), 2, '.', ''); ?>">
+                                        <input type="text" name="amount" id="amount" class="form-control form-control-sm" value="<?php echo number_format((float)(max(0, $total - $total_payment)), 2, '.', ''); ?>">
                                         <span class="text-danger"><?php echo form_error('amount'); ?></span>
                                     </div>
                                     <div class="col-md-6">

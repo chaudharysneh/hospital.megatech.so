@@ -62,18 +62,56 @@ $config['payroll_status'] = array(
     'not_generate' => lang('not_generated'),
 ); 
 
-$config['payment_mode'] = array(
+$default_payment_modes = array(
     'Cash'                     => lang('cash'),
     'ZAAD'                     => 'ZAAD',
     'eDahab'                   => 'eDahab',
     'Pending'                  => lang('pending'),
     'Premiere Wallet'          => 'Premiere Wallet',
+    'Pending'                  => 'Pending',
+    'ZAAD'                     => 'ZAAD',
+    'eDahab'                   => 'eDahab',
+    'Premiere Wallet'          => 'Premiere Wallet',
     'Cheque'                   => lang('cheque'),
     'transfer_to_bank_account' => lang('transfer_to_bank_account'),
     'UPI'                      => lang('upi'),
-    'Online'                    => lang('online'),
+    'Online'                   => lang('online'),
     'Other'                    => lang('other'),    
 );
+
+$payment_modes = [];
+$all_payment_modes = [];
+$json_path = APPPATH . 'config/payment_modes.json';
+if (file_exists($json_path)) {
+    $data = json_decode(file_get_contents($json_path), true);
+    if (is_array($data)) {
+        // Build all payment modes
+        foreach ($default_payment_modes as $k => $v) {
+            $all_payment_modes[$k] = $v;
+        }
+        foreach ($data as $k => $v) {
+            if (!isset($all_payment_modes[$k])) {
+                $all_payment_modes[$k] = $k;
+            }
+        }
+        
+        // Build active payment modes
+        foreach ($all_payment_modes as $key => $val) {
+            if (isset($data[$key]) && $data[$key] == 1) {
+                $payment_modes[$key] = $val;
+            }
+        }
+    } else {
+        $payment_modes = $default_payment_modes;
+        $all_payment_modes = $default_payment_modes;
+    }
+} else {
+    $payment_modes = $default_payment_modes;
+    $all_payment_modes = $default_payment_modes;
+}
+
+$config['payment_mode'] = $payment_modes;
+$config['all_payment_modes'] = $all_payment_modes;
 
 $config['yesno_condition'] = array(
     'no'  => lang('no'),

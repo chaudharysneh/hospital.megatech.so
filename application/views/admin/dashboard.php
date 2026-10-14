@@ -168,7 +168,7 @@ function bb_class($u) { if ($u <= 3) return 'low'; if ($u <= 5) return 'warn'; r
 
 <!-- ═══════════ Operations snapshot (4 cards) ═══════════ -->
 <div class="ops-grid">
-
+    
     <?php if ($this->rbac->hasPrivilege('balance_amount_report', 'can_view')): ?>
     <a class="kpi s-red supplier-due-card" href="<?php echo site_url('admin/report/balanceamountreport'); ?>">
         <div class="kpi-label">Suppliers Due Amount</div>
@@ -181,8 +181,7 @@ function bb_class($u) { if ($u <= 3) return 'low'; if ($u <= 5) return 'warn'; r
         </svg>
     </a>
     <?php endif; ?>
-
-
+    
     <?php if ($this->rbac->hasPrivilege('dash_today_appointments', 'can_view')): ?>
     <div class="ops-card">
         <div class="head">
@@ -238,13 +237,13 @@ function bb_class($u) { if ($u <= 3) return 'low'; if ($u <= 5) return 'warn'; r
         <?php endif; ?>
     </div>
     <?php endif; ?>
+    
 
 
-
-</div>
-
-<!-- ═══════════ Charts (Yearly Income vs Expense + Monthly Income Mix) ═══════════ -->
-<div class="dash-chart-row dash-chart-row-with-blood">
+    </div>
+    
+    <!-- ═══════════ Charts (Yearly Income vs Expense + Monthly Income Mix) ═══════════ -->
+    <div class="dash-chart-row dash-chart-row-with-blood">
 
     <?php if ($this->rbac->hasPrivilege('dash_blood_bank', 'can_view')): ?>
     <div class="ops-card blood-bank-card">
@@ -268,6 +267,7 @@ function bb_class($u) { if ($u <= 3) return 'low'; if ($u <= 5) return 'warn'; r
         </div>
     </div>
     <?php endif; ?>
+
 
     <?php if ($this->rbac->hasPrivilege('yearly_income_expense_chart', 'can_view')) { ?>
     <div class="dash-chart-card">
@@ -322,8 +322,6 @@ function bb_class($u) { if ($u <= 3) return 'low'; if ($u <= 5) return 'warn'; r
         </div>
     </div>
     <?php } ?>
-
-
 
 </div>
 

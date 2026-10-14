@@ -111,7 +111,7 @@ class Appointment extends Admin_Controller
         $this->form_validation->set_rules('appointment_status', $this->lang->line('appointment_status'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('validate_resource', $this->lang->line('appointment'), 'callback_validateCanAddNewResource[no_of_appointment,1]');
 
-        if ($this->input->post("payment_mode", TRUE) == "Cheque") {
+        if (in_array($this->input->post("payment_mode", TRUE), array("Cheque", "ZAAD", "eDahab", "Premiere Wallet"))) {
             $this->form_validation->set_rules('cheque_no', $this->lang->line('cheque_no'), 'trim|required');
             $this->form_validation->set_rules('cheque_date', $this->lang->line('cheque_date'), 'trim|required');
             $this->form_validation->set_rules('document', $this->lang->line("document"), 'callback_handle_doc_upload[document]|callback_validateCanUploadFile[document]');
@@ -262,7 +262,7 @@ class Appointment extends Admin_Controller
                 'received_by'    => $staff_id,
             );
 
-            if ($this->input->post('payment_mode', TRUE) == "Cheque") {
+            if (in_array($this->input->post('payment_mode', TRUE), array("Cheque", "ZAAD", "eDahab", "Premiere Wallet"))) {
                 $transaction_array['cheque_date']     = $cheque_date;
                 $transaction_array['cheque_no']       = $this->input->post('cheque_no', TRUE);
                 if (isset($_FILES["document"]) && !empty($_FILES['document']['name'])) {
@@ -1012,7 +1012,7 @@ class Appointment extends Admin_Controller
         $result['discount_percentage']              = $result['discount_percentage'];
 
         if ($result['payment_mode']) {
-            $result['payment_mode']        = $this->lang->line(strtolower($result['payment_mode']));
+            $result['payment_mode']        = ($this->lang->line(strtolower($result['payment_mode']))) ? $this->lang->line(strtolower($result['payment_mode'])) : $result['payment_mode'];
         } else {
             $result['payment_mode']        = '';
         }
@@ -1102,7 +1102,7 @@ class Appointment extends Admin_Controller
         $result['payment_mode_type']   = $result['payment_mode'];//added
 
         if ($result['payment_mode']) {
-            $result['payment_mode']   = $this->lang->line(strtolower($result['payment_mode']));
+            $result['payment_mode']   = ($this->lang->line(strtolower($result['payment_mode']))) ? $this->lang->line(strtolower($result['payment_mode'])) : $result['payment_mode'];
         } else {
             $result['payment_mode']   = '';
         }
@@ -1976,7 +1976,7 @@ class Appointment extends Admin_Controller
                 'received_by'    => $staff_id,
             );
 
-            if ($edit_pay_mode == "Cheque") {
+            if (in_array($edit_pay_mode, array("Cheque", "ZAAD", "eDahab", "Premiere Wallet"))) {
                 $transaction_array['cheque_date']     = $cheque_date;
                 $transaction_array['cheque_no']       = $this->input->post('cheque_no', TRUE);
                 if (isset($_FILES["document"]) && !empty($_FILES['document']['name'])) {
@@ -2012,6 +2012,38 @@ class Appointment extends Admin_Controller
 
             if (!empty($appointment_payment) && !empty($charges)):
             $apply_charge        = $charges['standard_charge'] + ($charges['standard_charge'] * ($charges['percentage'] / 100));
+
+            $edit_pay_mode = $this->input->post("edit_payment_mode", TRUE);
+            if (!empty($transaction_data) && $edit_pay_mode != "") {
+                $transaction_update = array(
+                    'payment_mode' => $edit_pay_mode,
+                );
+                
+                if (in_array($edit_pay_mode, array("Cheque", "ZAAD", "eDahab", "Premiere Wallet"))) {
+                    $cheque_date = $this->customlib->dateFormatToYYYYMMDD($this->input->post("cheque_date", true));
+                    $transaction_update['cheque_date'] = $cheque_date;
+                    $transaction_update['cheque_no'] = $this->input->post('cheque_no', TRUE);
+                    if (isset($_FILES["document"]) && !empty($_FILES['document']['name'])) {
+                        $file_name = $this->media_storage->fileupload("document",'./uploads/payment_document/');
+                        $transaction_update['attachment']      = $file_name;
+                        $transaction_update['attachment_name'] = $_FILES["document"]["name"];
+                        try {
+                            $saas_quota_result = $this->saasvalidation->updateStorageLimit('storage', ['document']);
+                            if (is_string($saas_quota_result)) {
+                                $saas_quota_decoded = json_decode($saas_quota_result);
+                                if (isset($saas_quota_decoded->status) && $saas_quota_decoded->status === false) {
+                                    log_message('error', 'SaaS storage quota update returned failure (appointment reschedule): ' . ($saas_quota_decoded->message ?? 'unknown'));
+                                }
+                            }
+                        } catch (Exception $e) {
+                            log_message('error', 'SaaS storage quota update failed (appointment reschedule): ' . $e->getMessage());
+                        }
+                    }
+                }
+                
+                $this->db->where('id', $transaction_data->id)->update('transactions', $transaction_update);
+            }
+            
             
             $opd_details         = array(
                 'patient_id'   => $appointment_details['patient_id'],

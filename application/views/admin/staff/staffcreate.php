@@ -45,7 +45,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-2">
                     <label class="sh-label"><?php echo $this->lang->line('staff_id'); ?> <span class="req">*</span></label>
-                    <input autofocus id="employee_id" name="employee_id" type="text" class="form-control" value="<?php echo set_value('employee_id') ?>" />
+                    <input autofocus id="employee_id" name="employee_id" type="text" class="form-control" value="<?php echo set_value('employee_id', $auto_employee_id) ?>" />
                     <span class="text-danger"><?php echo form_error('employee_id'); ?></span>
                 </div>
                 <div class="col-md-2">

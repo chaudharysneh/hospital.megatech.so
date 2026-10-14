@@ -2061,7 +2061,10 @@ class Pathology extends Admin_Controller
     {
         $id     = $this->input->post('id', TRUE);
         $charge = array();
-        $pathology_center = $this->lang->line('in_house_pathology_lab');
+        $pathology_center = $this->customlib->getAppName();
+        if (empty($pathology_center)) {
+            $pathology_center = $this->lang->line('in_house_pathology_lab');
+        }
         $report           = $this->pathology_model->getPathologyReportByID($id);
         if (!empty($report)) {
             if ($report['pathology_center'] == "") {
@@ -2174,6 +2177,7 @@ class Pathology extends Admin_Controller
                             'pathology_report_id'          => $pathology_report_id,
                             'pathology_parameterdetail_id' => $row_value,
                             'pathology_report_value'       => $this->input->post('pathology_parameter_' . $row_value, TRUE),
+                            'flag'                         => $this->input->post('pathology_flag_' . $row_value, TRUE),
                         );
                     } else {
                         $update_array[] = array(
@@ -2181,6 +2185,7 @@ class Pathology extends Admin_Controller
                             'pathology_report_id'          => $pathology_report_id,
                             'pathology_parameterdetail_id' => $row_value,
                             'pathology_report_value'       => $this->input->post('pathology_parameter_' . $row_value, TRUE),
+                            'flag'                         => $this->input->post('pathology_flag_' . $row_value, TRUE),
                         );
                     }
                 }

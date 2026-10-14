@@ -35,7 +35,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                 <option value=""><?php echo $this->lang->line('select'); ?></option>
                                 <?php foreach ($pathology_tests as $pathology_test_key => $pathology_test_value) { ?>
                                     <option value="<?php echo $pathology_test_value["id"]; ?>" <?php echo ($pathology_test_value["id"] == $test_value->pathology_id) ? 'selected' : ''; ?>>
-                                        <?php echo $pathology_test_value["test_name"] . " (" . $pathology_test_value["short_name"] . ")"; ?>
+                                        <?php echo "(" . $pathology_test_value["short_name"] . ") " . $pathology_test_value["test_name"]; ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -121,7 +121,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                             <select class="form-control form-control-sm test_name select2 w-100"  name="test_name_1" onchange="gettestpathodetails(this.value, 1)">
                                 <option value=""><?php echo $this->lang->line('select'); ?></option>
                                 <?php foreach ($pathology_tests as $test_key => $test_value) { ?>
-                                    <option value="<?php echo $test_value["id"]; ?>"><?php echo $test_value["test_name"] . " (" . $test_value["short_name"] . ")"; ?></option>
+                                    <option value="<?php echo $test_value["id"]; ?>"><?php echo "(" . $test_value["short_name"] . ") " . $test_value["test_name"]; ?></option>
                                 <?php } ?>
                             </select>
                             <span class="text-danger"><?php echo form_error('test_name_id[]'); ?></span>

@@ -491,6 +491,7 @@ class Staff extends Admin_Controller
         $data['title']          = 'Add Staff';
         $data["contract_type"]  = $this->contract_type;
         $custom_fields          = $this->customfield_model->getByBelong('staff');
+        $data['auto_employee_id'] = $this->staff_model->getAutoEmployeeId();
 		
         foreach ($custom_fields as $custom_fields_key => $custom_fields_value) {
             if ($custom_fields_value['validation']) {

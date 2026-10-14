@@ -46,6 +46,10 @@
                 <li><a class="<?php echo set_Innermenu('admin/paymentsettings'); ?>" href="<?php echo base_url(); ?>admin/paymentsettings"><?php echo $this->lang->line('payment_methods'); ?></a></li>
             <?php } ?>
 
+            <?php if ($this->rbac->hasPrivilege('payment_mode', 'can_view')) { ?>
+                <li><a class="<?php echo set_Innermenu('admin/paymentsettings/payment_mode'); ?>" href="<?php echo base_url(); ?>admin/paymentsettings/payment_mode">Payment Mode</a></li>
+            <?php } ?>
+
             <div class="tablists-divider"></div>
 
 			<?php if ($this->module_lib->hasActive('front_cms')) { if ($this->rbac->hasPrivilege('front_cms_setting', 'can_view')) { ?>

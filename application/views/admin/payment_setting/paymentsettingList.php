@@ -35,6 +35,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                         <li class="nav-item"><a class="nav-link" href="#tab_22" data-bs-toggle="tab"><?php echo $this->lang->line('skrill'); ?></a></li>
                          <li class="nav-item"><a class="nav-link" href="#tab_23" data-bs-toggle="tab"><?php echo $this->lang->line('payhere'); ?></a></li>
                         <li class="nav-item"><a class="nav-link" href="#tab_24" data-bs-toggle="tab"><?php echo $this->lang->line('onepay'); ?></a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_payment_modes" data-bs-toggle="tab">Payment Mode</a></li>
                     </ul>
                     </div>
                     <?php $radio_check = check_selected($paymentlist); ?>
@@ -1740,6 +1741,54 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                 </div>
                             </form>
                         </div>
+                        <div class="tab-pane" id="tab_payment_modes">
+                            <form role="form" id="form_payment_modes" action="<?php echo site_url('admin/paymentsettings/update_payment_modes') ?>" method="post">
+                                <div class="p-3">
+                                    <div class="gw-tab-card">
+                                        <div class="cred-header">
+                                            <div class="cred-header-icon"><i class="fa fa-money"></i></div>
+                                            <h6>Payment Mode Settings</h6>
+                                        </div>
+                                        <div class="cred-body">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Payment Mode</th>
+                                                        <th class="text-right">Enabled</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php 
+                                                    $all_modes = $this->config->item('all_payment_modes');
+                                                    $active_modes = $this->config->item('payment_mode');
+                                                    if (is_array($all_modes)) {
+                                                        foreach ($all_modes as $key => $mode) { 
+                                                            $is_active = (is_array($active_modes) && array_key_exists($key, $active_modes));
+                                                    ?>
+                                                    <tr>
+                                                        <td><?php echo $mode; ?></td>
+                                                        <td class="text-right">
+                                                            <label class="checkbox-inline">
+                                                                <input type="checkbox" name="payment_modes[]" value="<?php echo $key; ?>" <?php echo $is_active ? 'checked' : ''; ?>>
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                    <?php 
+                                                        }
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <?php if ($this->rbac->hasPrivilege('payment_methods', 'can_edit')) { ?>
+                                        <div class="cred-footer">
+                                            <button type="submit" class="btn btn-info btn-sm payment_modes_save" data-loading-text="<i class='fa fa-spinner fa-spin'></i> <?php echo $this->lang->line('save'); ?>"><i class="fa fa-check-circle"></i> <?php echo $this->lang->line('save'); ?></button>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                         <!-- /.tab-pane -->
                     </div><!-- /.tab-content -->
                 </div><!-- /.card -->
@@ -2741,6 +2790,32 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
             $tabs.on('scroll', updateArrows);
             $(window).on('resize', updateArrows);
             setTimeout(updateArrows, 50);
+        });
+    });
+
+    $("#form_payment_modes").submit(function (e) {
+        var $this = $(".payment_modes_save");
+        $this.button('loading');
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: "POST",
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR)
+            {
+                if (data.st === 1) {
+                    errorMsg(data.msg);
+                } else if (data.st === 0) {
+                    successMsg(data.msg);
+                    window.location.reload();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+            }, complete: function () {
+                $this.button('reset');
+            }
         });
     });
 </script>

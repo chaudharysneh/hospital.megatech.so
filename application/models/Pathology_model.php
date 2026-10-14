@@ -10,6 +10,11 @@ class Pathology_model extends MY_Model
     {
         parent::__construct();
         $this->load->model('Pathology_category_model');
+        
+        // Auto-fix for live environments missing the 'flag' column
+        if (!$this->db->field_exists('flag', 'pathology_report_parameterdetails')) {
+            $this->db->query("ALTER TABLE pathology_report_parameterdetails ADD COLUMN flag VARCHAR(50) NULL");
+        }
     }
 
     public function add($data, $insert_parameter_array, $update_parameter_array, $deleted_parameter_array)
@@ -415,7 +420,7 @@ class Pathology_model extends MY_Model
         $this->db->join('pathology_category', 'pathology.pathology_category_id = pathology_category.id', 'left');
         $this->db->join('charges', 'pathology.charge_id = charges.id', 'left');
         $this->db->join('tax_category', 'charges.tax_category_id = tax_category.id', 'left');
-        $this->db->order_by('pathology.id', 'desc');
+        $this->db->order_by('pathology.id', 'asc');
         $query = $this->db->get('pathology');
         return $query->result_array();
     }
@@ -553,7 +558,7 @@ class Pathology_model extends MY_Model
     public function getPatientPathologyReportParameterDetails($pathology_report_id)
     {
         $pathology_report_id = (int) $pathology_report_id;
-        $sql    = "SELECT pathology_parameterdetails.*,pathology_report.pathology_result,pathology_parameter.parameter_name,pathology_parameter.description,pathology_parameter.reference_range,unit.unit_name,IFNULL(pathology_report_parameterdetails.id,0) as `pathology_report_parameterdetail_id`,pathology_report_parameterdetails.pathology_report_id,pathology_report_parameterdetails.pathology_parameterdetail_id,pathology_report_parameterdetails.pathology_report_value,pathology_parameter.range_from,pathology_parameter.range_to FROM `pathology_report` INNER join pathology_parameterdetails on pathology_parameterdetails.pathology_id=pathology_report.pathology_id INNER JOIN pathology_parameter on pathology_parameterdetails.pathology_parameter_id=pathology_parameter.id INNER JOIN unit on pathology_parameter.unit=unit.id LEFT join pathology_report_parameterdetails on pathology_report_parameterdetails.pathology_parameterdetail_id=pathology_parameterdetails.id and pathology_report_parameterdetails.pathology_report_id=pathology_report.id WHERE pathology_report.id =" . $pathology_report_id;
+        $sql    = "SELECT pathology_parameterdetails.*,pathology_report.pathology_result,pathology_parameter.parameter_name,pathology_parameter.description,pathology_parameter.reference_range,unit.unit_name,IFNULL(pathology_report_parameterdetails.id,0) as `pathology_report_parameterdetail_id`,pathology_report_parameterdetails.pathology_report_id,pathology_report_parameterdetails.pathology_parameterdetail_id,pathology_report_parameterdetails.pathology_report_value,pathology_report_parameterdetails.flag,pathology_parameter.range_from,pathology_parameter.range_to FROM `pathology_report` INNER join pathology_parameterdetails on pathology_parameterdetails.pathology_id=pathology_report.pathology_id INNER JOIN pathology_parameter on pathology_parameterdetails.pathology_parameter_id=pathology_parameter.id INNER JOIN unit on pathology_parameter.unit=unit.id LEFT join pathology_report_parameterdetails on pathology_report_parameterdetails.pathology_parameterdetail_id=pathology_parameterdetails.id and pathology_report_parameterdetails.pathology_report_id=pathology_report.id WHERE pathology_report.id =" . $pathology_report_id;
         $query  = $this->db->query($sql);
         $result = $query->result();
         return $result;

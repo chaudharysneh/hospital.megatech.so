@@ -34,7 +34,7 @@ $currency_symbol = $this->customlib->getHospitalCurrencyFormat();
                                 <option value=""><?php echo $this->lang->line('select'); ?></option>
                                 <?php foreach ($testlist as $dkey => $dvalue) { ?>
                                     <option value="<?php echo $dvalue["id"]; ?>" <?php echo set_select('test_name_' . $total_rows, $dvalue["id"], ($report_value->pathology_id == $dvalue["id"]) ? TRUE : FALSE); ?>>
-                                        <?php echo $dvalue["test_name"] . " (" . $dvalue["short_name"] . ")"; ?>
+                                        <?php echo "(" . $dvalue["short_name"] . ") " . $dvalue["test_name"]; ?>
                                     </option>
                                 <?php } ?>
                             </select>
