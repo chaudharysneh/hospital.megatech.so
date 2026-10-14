@@ -1,1 +1,4 @@
 codecanyon-tjjCXj44-smart-hospital-hospital-management-system.zip
+/application/sessions/*
+!/application/sessions/.htaccess
+!/application/sessions/index.html
