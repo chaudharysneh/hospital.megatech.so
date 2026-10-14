@@ -91,8 +91,10 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                             ?></td>
                             <td>
                                 <?php
-                                $flag = '';
-                                if ($level_exceeded) {
+                                $flag = isset($parameter_value->flag) ? trim((string) $parameter_value->flag) : '';
+                                if ($flag !== '') {
+                                    echo "<span style='color:#dc2626; font-weight:bold;'>" . html_escape($flag) . "</span>";
+                                } elseif ($level_exceeded) {
                                     $patient_range = $parameter_value->pathology_report_value;
                                     $range_from = $parameter_value->range_from;
                                     $range_to = $parameter_value->range_to;
@@ -120,7 +122,7 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                         <?php $row_counter++; } ?>
                         <?php if (!empty($parameter_value->pathology_result)) { ?>
                         <tr>
-                            <td colspan="4" class="sh-cell-sm">
+                            <td colspan="5" class="sh-cell-sm">
                                 <span class="fw-semibold"><?php echo $this->lang->line('result'); ?>: </span><?php echo nl2br($parameter_value->pathology_result); ?>
                             </td>
                         </tr>

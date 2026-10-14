@@ -124,8 +124,10 @@ include(APPPATH . 'views/admin/shared/_print_css.php');
                             ?></td>
                             <td>
                                 <?php
-                                $flag = '';
-                                if ($level_exceeded) {
+                                $flag = isset($parameter_value->flag) ? trim((string) $parameter_value->flag) : '';
+                                if ($flag !== '') {
+                                    echo "<span style='color:#dc2626; font-weight:bold;'>" . html_escape($flag) . "</span>";
+                                } elseif ($level_exceeded) {
                                     $patient_range = $parameter_value->pathology_report_value;
                                     $range_from = $parameter_value->range_from;
                                     $range_to = $parameter_value->range_to;
